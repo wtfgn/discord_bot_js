@@ -6,6 +6,7 @@
 	"dependencies": {
 		"discord.js": "^14.12.1",
 		"dotenv": "^16.3.1",
+		"fast-glob": "^3.3.1",
 		"pinia": "^2.1.6",
 		"vite-node": "^0.34.1",
 		"vue": "^3.3.4"
