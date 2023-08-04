@@ -18,7 +18,6 @@ const updateSlashCommands = async (guildID, commandData) => {
 
 export const loadCommands = async () => {
 	const appStore = useAppStore();
-	const client = appStore.client;
 	const commandData = [];
 	const commands = new Collection();
 	const files = await fg('./src/commands/**/index.js');
@@ -38,8 +37,6 @@ export const loadCommands = async () => {
 	}
 	// Set commands collection to app store
 	appStore.commandsActionMap = commands;
-	// Updata client commands
-	client.commands = commands;
 	// Update slash commands
 	updateSlashCommands(process.env.GUILD_ID, commandData);
 };

@@ -5,7 +5,7 @@ export const data = new SlashCommandBuilder()
 	.setDescription('Replies with Pong!');
 
 export const execute = async (interaction) => {
-	await interaction.reply(`Pong! ${interaction.client.ws.ping}ms`);
+	await interaction.reply(`Pong! ${interaction.client.ws.ping}ms edited`);
 };
 
 // Cooldown
