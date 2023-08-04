@@ -29,7 +29,11 @@ export const checkCooldown = (interaction, command) => {
 		}
 	}
 
+	// If the user is not in cooldown, set the timestamp
 	timestamps.set(interaction.user.id, now);
+	// Delete the timestamp after the cooldown period ends
 	setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-	return 0;
+
+	// Return false if the user is not in cooldown
+	return false;
 };
