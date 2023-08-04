@@ -7,3 +7,6 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction) => {
 	await interaction.reply(`Pong! ${interaction.client.ws.ping}ms`);
 };
+
+// Cooldown
+export const cooldown = 5;

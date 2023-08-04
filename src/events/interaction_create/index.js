@@ -1,5 +1,6 @@
 import { Events } from 'discord.js';
 import { useAppStore } from '@/store/app.js';
+import { checkCooldown } from './cooldown.js';
 
 export const data = {
 	name: Events.InteractionCreate,
@@ -19,8 +20,17 @@ export const execute = async interaction => {
 		return;
 	}
 
+	// Check cooldown
+	const timeLeft = checkCooldown(interaction, command);
+	if (timeLeft) {
+		return interaction.reply({
+			content: `Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.data.name}\` command.`,
+			ephemeral: true,
+		});
+	}
+
+	// Execute command
 	try {
-		// Execute command
 		await command.execute(interaction);
 	}
 	catch (error) {
