@@ -7,7 +7,7 @@ export const data = new SlashCommandSubcommandBuilder()
 export const execute = async (interaction) => {
 	const { client } = interaction;
 	const { user } = client;
-	console.log(interaction);
+
 
 	await interaction.reply({
 		embeds: [
