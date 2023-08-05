@@ -5,11 +5,11 @@ import { useAppStore } from '@/store/app.js';
 const updateSlashCommands = async (guildID, commandData) => {
 	const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
 	try {
-		await rest.put(
+		const result = await rest.put(
 			Routes.applicationGuildCommands(process.env.CLIENT_ID, guildID),
 			{ body: commandData },
 		);
-		console.log(`Successfully registered ${commandData.length} application commands.`);
+		console.log(`Successfully registered ${result.length} application commands.`);
 	}
 	catch (error) {
 		console.error(error);
@@ -47,11 +47,14 @@ export const loadEvents = async () => {
 	const files = await fg('./src/events/**/index.js');
 	for (const file of files) {
 		const event = await import(file);
-		if (event.data.once) {
-			client.once(event.data.name, (...args) => event.execute(...args));
+		// Check if event has data and execute properties
+		if ('data' in event && 'execute' in event) {
+			// Set event listener
+			if (event.data.once) { client.once(event.data.name, event.execute); }
+			else { client.on(event.data.name, event.execute); }
 		}
 		else {
-			client.on(event.data.name, (...args) => event.execute(...args));
+			console.error(`Event ${file} is missing data or execute property`);
 		}
 	}
 };
