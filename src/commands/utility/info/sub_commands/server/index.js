@@ -1,8 +1,8 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandSubcommandBuilder } from 'discord.js';
 
-export const data = new SlashCommandBuilder()
+export const data = new SlashCommandSubcommandBuilder()
 	.setName('server')
-	.setDescription('Provides information about the server.');
+	.setDescription('Info about the server.');
 
 export const execute = async (interaction) => {
 	// interaction.guild is the object representing the Guild in which the command was run

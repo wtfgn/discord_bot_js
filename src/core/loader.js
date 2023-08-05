@@ -20,12 +20,24 @@ export const loadCommands = async () => {
 	const appStore = useAppStore();
 	const commandData = [];
 	const commands = new Collection();
-	const files = await fg('./src/commands/**/index.js');
+	// If the index.js is in a sub_commands folder, do not load it
+	const files = await fg('./src/commands/**/index.js', { ignore: './src/commands/**/sub_commands/**/index.js' });
 	for (const file of files) {
 		// Import command
 		const command = await import(file);
 		// Check if command has data and execute properties
 		if ('data' in command && 'execute' in command) {
+			if (command.hasSubCommands) {
+				// Load sub commands
+				const subCommands = await loadSubCommands(command.data.name);
+				// Add sub commands to command data
+				for (const subCommand of subCommands.values()) {
+					// Add sub command data to command data
+					command.data.addSubcommand(subCommand.data);
+					// Add sub command to sub commands collection
+					command.subCommands.set(subCommand.data.name, subCommand);
+				}
+			}
 			// Push command data to array
 			commandData.push(command.data.toJSON());
 			// Add command to collection
@@ -57,4 +69,23 @@ export const loadEvents = async () => {
 			console.error(`Event ${file} is missing data or execute property`);
 		}
 	}
+};
+
+export const loadSubCommands = async (commandName) => {
+	const subCommands = new Map();
+	const files = await fg(`./src/commands/**/${commandName}/sub_commands/**/index.js`);
+	for (const file of files) {
+		// Import sub command
+		const subCommand = await import(file);
+		// Check if sub command has data and execute properties
+		if ('data' in subCommand && 'execute' in subCommand) {
+			// Add sub command to map
+			subCommands.set(subCommand.data.name, subCommand);
+		}
+		else {
+			console.error(`Sub command ${file} is missing data or execute property`);
+		}
+	}
+	console.log(`Loaded ${subCommands.size} sub commands for ${commandName}`);
+	return subCommands;
 };
