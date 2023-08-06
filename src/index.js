@@ -12,7 +12,15 @@ vueInit();
 dotenv.config();
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.DirectMessages,
+	],
+});
+
 // Initialize app store
 const appStore = useAppStore();
 // Set client to app store
