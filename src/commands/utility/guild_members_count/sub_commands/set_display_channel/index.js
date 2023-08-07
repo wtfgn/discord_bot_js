@@ -1,7 +1,6 @@
 import { SlashCommandSubcommandBuilder, ChannelType, codeBlock } from 'discord.js';
 import * as fs from 'fs';
-import path from 'path';
-import configData from '../../config.json';
+import configData from '@/config.json';
 
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -39,8 +38,7 @@ export const execute = async (interaction) => {
 	// Set config data
 	configData.displayChannelID = channel.id;
 	// Write config data to file
-	const filePath = path.resolve(__dirname, '../../config.json');
-	fs.writeFileSync(filePath, JSON.stringify(configData, null, 4), (err) => {
+	fs.writeFileSync('./src/config.json', JSON.stringify(configData, null, 4), (err) => {
 		if (err) {
 			console.error(err);
 			return;
