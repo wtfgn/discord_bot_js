@@ -27,7 +27,7 @@ export const loadCommands = async () => {
 		const command = await import(file);
 		// Check if command has data and execute properties
 		if ('data' in command && 'execute' in command) {
-			if (command.hasSubCommands) {
+			if (command.subCommands) {
 				// Load sub commands
 				const subCommands = await loadSubCommands(command.data.name);
 				// Add sub commands to command data
@@ -62,8 +62,9 @@ export const loadEvents = async () => {
 		// Check if event has data and execute properties
 		if ('data' in event && 'execute' in event) {
 			// Set event listener
-			if (event.data.once) { client.once(event.data.name, event.execute); }
-			else { client.on(event.data.name, event.execute); }
+			event.data.once ?
+				client.once(event.data.name, event.execute)
+				: client.on(event.data.name, event.execute);
 		}
 		else {
 			console.error(`Event ${file} is missing data or execute property`);
@@ -72,7 +73,7 @@ export const loadEvents = async () => {
 };
 
 export const loadSubCommands = async (commandName) => {
-	const subCommands = new Map();
+	const subCommands = new Collection();
 	const files = await fg(`./src/commands/**/${commandName}/sub_commands/**/index.js`);
 	for (const file of files) {
 		// Import sub command
