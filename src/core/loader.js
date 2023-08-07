@@ -63,8 +63,8 @@ export const loadEvents = async () => {
 		if ('data' in event && 'execute' in event) {
 			// Set event listener
 			event.data.once ?
-				client.once(event.data.name, event.execute)
-				: client.on(event.data.name, event.execute);
+				client.once(event.data.name, (...args) => event.execute(...args))
+				: client.on(event.data.name, (...args) => event.execute(...args));
 		}
 		else {
 			console.error(`Event ${file} is missing data or execute property`);
