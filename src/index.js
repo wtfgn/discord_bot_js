@@ -1,6 +1,7 @@
 import vueInit from '@/core/vue.js';
 // Require the necessary discord.js classes
 import { Client, GatewayIntentBits } from 'discord.js';
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import { loadCommands, loadEvents } from '@/core/loader.js';
 import { useAppStore } from '@/store/app.js';
@@ -10,6 +11,13 @@ vueInit();
 
 // Load .env file
 dotenv.config();
+
+// Initialize database
+export const sequelize = new Sequelize('database', 'user', 'password', {
+	dialect: 'sqlite',
+	storage: 'database.sqlite',
+	logging: false,
+});
 
 // Create a new client instance
 const client = new Client({

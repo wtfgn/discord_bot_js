@@ -1,6 +1,5 @@
-import { SlashCommandSubcommandBuilder, ChannelType, codeBlock } from 'discord.js';
-import * as fs from 'fs';
-import configData from '@/config.json';
+import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
+import { Guilds } from '@/schemas/guilds';
 
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -15,38 +14,49 @@ export const data = new SlashCommandSubcommandBuilder()
 	);
 
 export const execute = async (interaction) => {
-	const { options, guild } = interaction;
+	await interaction.reply({ content: 'Setting display channel...\n(If this message does not disappear, please wait 10 mins and try again)', ephemeral: true });
+	const { options } = interaction;
+	const memberCount = interaction.guild.memberCount;
 	const channel = options.getChannel('channel');
-	const guildMembersCount = guild.memberCount;
 
-	// Check if channel is already displaying the number of guild members
-	if (configData.displayChannelID) {
-		return interaction.reply({
-			content: `
-			The channel <#${configData.displayChannelID}> is already displaying the number of guild members
-			\nPlease remove the display channel first before setting a new one
-			\n${codeBlock('/guild_members_count remove_display_channel')}`,
-			ephemeral: true,
-		});
+	// Get guild from DB
+	const [ guilds ] = await Guilds.findOrCreate({
+		where: {
+			guildId: interaction.guildId,
+		},
+	});
+
+	// Check if channel is already set
+	if (guilds.displayChannelID === channel.id) {
+		return await interaction.editReply({ content: 'Channel is already set', ephemeral: true });
 	}
 
+	// Switch to another channel
+	if (guilds.displayChannelID) {
+		const oldChannel = await interaction.guild.channels.cache.get(guilds.displayChannelID);
+		const oldChannelName = guilds.displayChannelName;
+
+		// Set channel name
+		await oldChannel.setName(oldChannelName);
+		// Set channel permissions
+		await oldChannel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
+	}
+
+	// Update channel
+	await Guilds.update({
+		displayChannelID: channel.id,
+		displayChannelName: channel.name,
+	}, {
+		where: {
+			guildId: interaction.guildId,
+		},
+	});
+
 	// Set channel name
-	await channel.setName(`Members: ${guildMembersCount}`);
+	await channel.setName(`Members: ${memberCount}`);
 	// Set channel permissions
-	await channel.permissionOverwrites.edit(guild.roles.everyone, { Connect: false });
+	await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: false });
 
-	// Set config data
-	configData.displayChannelID = channel.id;
-	// Write config data to file
-	fs.writeFileSync('./src/config.json', JSON.stringify(configData, null, 4), (err) => {
-		if (err) {
-			console.error(err);
-			return;
-		}
-	});
-
-	await interaction.reply({
-		content: `The channel <#${channel.id}> will now display the number of guild members`,
-		ephemeral: true,
-	});
+	// Reply to interaction
+	await interaction.editReply({ content: `<#${channel.id}> will now display the number of guild members`, ephemeral: true });
 };

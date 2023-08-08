@@ -1,41 +1,55 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
-import * as fs from 'fs';
-import configData from '@/config.json';
-
+import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
+import { Guilds } from '@/schemas/guilds';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('remove_display_channel')
-	.setDescription('Remove the channel where the number of guild members is displayed');
+	.setDescription('Remove the channel where the number of guild members is displayed')
+	.addChannelOption(option =>
+		option
+			.setName('channel')
+			.setDescription('The channel')
+			.setRequired(true)
+			.addChannelTypes(ChannelType.GuildVoice),
+	);
 
 export const execute = async (interaction) => {
-	const { guild } = interaction;
-	const channel = guild.channels.cache.get(configData.displayChannelID);
+	const { options } = interaction;
+	const channel = options.getChannel('channel');
 
-	// Check if channel is already displaying the number of guild members
-	if (!configData.displayChannelID) {
-		return interaction.reply({
-			content: 'There is no display channel set',
-			ephemeral: true,
-		});
+	await interaction.reply({ content: 'Removing display channel...\n(If this message does not disappear, please wait 10 mins and try again)', ephemeral: true });
+
+	// Get guild from DB
+	const [ guilds ] = await Guilds.findOrCreate({
+		where: {
+			guildId: interaction.guildId,
+		},
+	});
+
+	// Check if channel is already set
+	if (!guilds.displayChannelID) {
+		return await interaction.editReply({ content: 'Channel is not set', ephemeral: true });
 	}
 
+	// Check if channel is the same
+	if (guilds.displayChannelID !== channel.id) {
+		return await interaction.editReply({ content: 'Channel is not the same', ephemeral: true });
+	}
+
+	// Remove channel
+	await Guilds.update({
+		displayChannelID: null,
+		displayChannelName: null,
+	}, {
+		where: {
+			guildId: interaction.guildId,
+		},
+	});
+
 	// Set channel name
-	await channel.setName('Voice Channel');
+	await channel.setName(Guilds.displayChannelName);
 	// Set channel permissions
-	await channel.permissionOverwrites.edit(guild.roles.everyone, { Connect : true });
+	await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
 
-	// Set config data
-	configData.displayChannelID = null;
-	// Write config data to file
-	fs.writeFileSync('./src/config.json', JSON.stringify(configData, null, 4), (err) => {
-		if (err) {
-			console.error(err);
-			return;
-		}
-	});
-
-	await interaction.reply({
-		content: `The channel <#${channel.id}> will no longer display the number of guild members`,
-		ephemeral: true,
-	});
+	// Reply to interaction
+	await interaction.editReply({ content: 'Channel removed', ephemeral: true });
 };
