@@ -19,19 +19,19 @@ export const execute = async (interaction) => {
 	await interaction.reply({ content: 'Removing display channel...\n(If this message does not disappear, please wait 10 mins and try again)', ephemeral: true });
 
 	// Get guild from DB
-	const [ guilds ] = await Guilds.findOrCreate({
+	const [ guild ] = await Guilds.findOrCreate({
 		where: {
 			guildId: interaction.guildId,
 		},
 	});
 
 	// Check if channel is already set
-	if (!guilds.displayChannelID) {
+	if (!guild.displayChannelID) {
 		return await interaction.editReply({ content: 'Channel is not set', ephemeral: true });
 	}
 
 	// Check if channel is the same
-	if (guilds.displayChannelID !== channel.id) {
+	if (guild.displayChannelID !== channel.id) {
 		return await interaction.editReply({ content: 'Channel is not the same', ephemeral: true });
 	}
 

@@ -20,21 +20,21 @@ export const execute = async (interaction) => {
 	const channel = options.getChannel('channel');
 
 	// Get guild from DB
-	const [ guilds ] = await Guilds.findOrCreate({
+	const [ guild ] = await Guilds.findOrCreate({
 		where: {
 			guildId: interaction.guildId,
 		},
 	});
 
 	// Check if channel is already set
-	if (guilds.displayChannelID === channel.id) {
+	if (guild.displayChannelID === channel.id) {
 		return await interaction.editReply({ content: 'Channel is already set', ephemeral: true });
 	}
 
 	// Switch to another channel
-	if (guilds.displayChannelID) {
-		const oldChannel = await interaction.guild.channels.cache.get(guilds.displayChannelID);
-		const oldChannelName = guilds.displayChannelName;
+	if (guild.displayChannelID) {
+		const oldChannel = await interaction.guild.channels.cache.get(guild.displayChannelID);
+		const oldChannelName = guild.displayChannelName;
 
 		// Set channel name
 		await oldChannel.setName(oldChannelName);
