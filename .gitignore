@@ -3,4 +3,3 @@ yarn.lock
 .env
 .eslintrc.json
 database.sqlite
-```

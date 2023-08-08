@@ -5,6 +5,7 @@
 		"dev": "vite-node src/index.js"
 	},
 	"dependencies": {
+		"dayjs": "^1.11.9",
 		"discord.js": "^14.12.1",
 		"dotenv": "^16.3.1",
 		"fast-glob": "^3.3.1",
