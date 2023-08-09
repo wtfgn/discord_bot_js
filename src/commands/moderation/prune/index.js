@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, codeBlock } from 'discord.js';
+import { SlashCommandBuilder, inlineCode } from 'discord.js';
 import wait from 'node:timers/promises';
 
 export const data = new SlashCommandBuilder()
@@ -37,7 +37,7 @@ export const execute = async (interaction) => {
 	}
 
 	await interaction.reply({
-		content: `Pruned ${codeBlock('fix', `${deletedMessages.size}`)} message(s)${target ? ` from ${target.tag}` : ''}`,
+		content: `Pruned ${inlineCode('fix', deletedMessages.size)} message(s)${target ? ` from ${target.tag}` : ''}`,
 		ephemeral: true,
 	});
 	await wait.setTimeout(3000);
