@@ -1,4 +1,4 @@
-import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandSubcommandBuilder, EmbedBuilder, inlineCode } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -17,7 +17,12 @@ export const execute = async (interaction) => {
 	});
 
 	// If there are no alarms, send a message
-	if (alarms.length === 0) return interaction.reply('You have no alarms!');
+	if (alarms.length === 0) {
+		return interaction.reply({
+			content: `You have no alarms set!\nPlease use the ${inlineCode('/alarm add')} command to set an alarm!`,
+			ephemeral: true,
+		});
+	}
 
 	// Create an embed with all alarms
 	const embed = new EmbedBuilder()
@@ -38,5 +43,5 @@ export const execute = async (interaction) => {
 		});
 	});
 
-	interaction.reply({ embeds: [embed] });
+	interaction.reply({ embeds: [embed], ephemeral: true });
 };

@@ -54,8 +54,11 @@ export const execute = async (interaction) => {
 
 	// Check if the time is in the past
 	if (time.isBefore(dayjs())) {
-		return interaction.reply(`The time you specified is in the past!
-		\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`);
+		return interaction.reply({
+			content: `The time you specified is in the past!
+						\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`,
+			ephemeral: true,
+		});
 	}
 
 	// Create the alarm
@@ -67,5 +70,8 @@ export const execute = async (interaction) => {
 		time,
 	});
 
-	await interaction.reply(`Alarm set for ${inlineCode(time.format('YYYY-MM-DD HH:mm:ss'))} in <#${channel.id}>`);
+	await interaction.reply({
+		content: `Alarm set for ${inlineCode(time.format('YYYY-MM-DD HH:mm:ss'))} in <#${channel.id}>`,
+		ephemeral: true,
+	});
 };
