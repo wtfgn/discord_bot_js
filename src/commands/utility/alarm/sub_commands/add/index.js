@@ -55,8 +55,7 @@ export const execute = async (interaction) => {
 	// Check if the time is in the past
 	if (time.isBefore(dayjs())) {
 		return interaction.reply({
-			content: `The time you specified is in the past!
-						\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`,
+			content: `The time you specified is in the past!\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`,
 			ephemeral: true,
 		});
 	}

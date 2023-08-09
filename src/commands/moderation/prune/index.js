@@ -37,7 +37,7 @@ export const execute = async (interaction) => {
 	}
 
 	await interaction.reply({
-		content: `Pruned ${inlineCode('fix', deletedMessages.size)} message(s)${target ? ` from ${target.tag}` : ''}`,
+		content: `Pruned ${inlineCode(deletedMessages.size)} message(s)${target ? ` from ${target.tag}` : ''}`,
 		ephemeral: true,
 	});
 	await wait.setTimeout(3000);
