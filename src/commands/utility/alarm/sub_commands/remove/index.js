@@ -16,9 +16,19 @@ export const execute = async (interaction) => {
 
 	// Find the alarm with the specified id
 	const alarm = await Alarms.findOne({ where: { id, guildId } });
+
+	// If the alarm does not exist, send a message
 	if (!alarm) {
 		return interaction.reply({
 			content: `Alarm with id ${inlineCode(id)} does not exist!\nPlease use the ${inlineCode('/alarm list')} command to view all alarms!`,
+			ephemeral: true,
+		});
+	}
+
+	// If the user is not the owner of the alarm, send a message
+	if (alarm.userId !== interaction.member.id) {
+		return interaction.reply({
+			content: `You are not the owner of alarm with id ${inlineCode(id)}!\nPlease use the ${inlineCode('/alarm list')} command to view all alarms!`,
 			ephemeral: true,
 		});
 	}
