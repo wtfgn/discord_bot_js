@@ -1,9 +1,9 @@
-import { SlashCommandSubcommandBuilder, codeBlock } from 'discord.js';
+import { SlashCommandSubcommandBuilder, inlineCode } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
 import dayjs from 'dayjs';
 
 export const data = new SlashCommandSubcommandBuilder()
-	.setName('set')
+	.setName('add')
 	.setDescription('Set an alarm!')
 	.addIntegerOption(option =>
 		option
@@ -55,9 +55,10 @@ export const execute = async (interaction) => {
 	// Check if the time is in the past
 	if (time.isBefore(dayjs())) {
 		return interaction.reply(`The time you specified is in the past!
-		\nPlease specify a time after ${codeBlock('YYYY-MM-DD HH:mm:ss', dayjs().format('YYYY-MM-DD HH:mm:ss'))}`);
+		\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`);
 	}
 
+	// Create the alarm
 	await Alarms.create({
 		guildId,
 		userId: user.id,
@@ -66,5 +67,5 @@ export const execute = async (interaction) => {
 		time,
 	});
 
-	await interaction.reply(`Alarm set for ${time.format('YYYY-MM-DD HH:mm:ss')} in <#${channel.id}>`);
+	await interaction.reply(`Alarm set for ${inlineCode(time.format('YYYY-MM-DD HH:mm:ss'))} in <#${channel.id}>`);
 };

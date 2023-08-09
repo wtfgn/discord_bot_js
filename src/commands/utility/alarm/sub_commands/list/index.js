@@ -1,4 +1,4 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -16,6 +16,27 @@ export const execute = async (interaction) => {
 		},
 	});
 
-	// Reply with a list of all alarms
-	return interaction.reply(`Alarms:\n${alarms.map(alarm => alarm.dataValues.id).join('\n')}`);
+	// If there are no alarms, send a message
+	if (alarms.length === 0) return interaction.reply('You have no alarms!');
+
+	// Create an embed with all alarms
+	const embed = new EmbedBuilder()
+		.setTitle('Your alarms')
+		.setColor('#00ff00')
+		.setTimestamp()
+		.setAuthor({
+			name: member.user.username,
+			iconURL: member.user.avatarURL(),
+		})
+		.setDescription('Here are all your alarms!');
+
+	alarms.forEach(alarm => {
+		const { id, time, message } = alarm.dataValues;
+		embed.addFields({
+			name: `Alarm ID: ${id}`,
+			value: `Time: ${time.toLocaleString()}\nMessage: ${message}`,
+		});
+	});
+
+	interaction.reply({ embeds: [embed] });
 };

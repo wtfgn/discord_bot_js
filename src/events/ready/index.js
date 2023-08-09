@@ -13,7 +13,7 @@ export const execute = async client => {
 	// When under development:
 	// Use { force: true } to drop all tables and recreate them
 	// Use { alter: true } to alter the tables to fit the models
-	await sequelize.sync({ force: true });
+	await sequelize.sync({ alter: true });
 
 	// Check for alarms every 5 seconds
 	setInterval(() => checkAlarm(client), 5000);

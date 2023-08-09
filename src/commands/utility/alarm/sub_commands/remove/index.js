@@ -1,4 +1,4 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { SlashCommandSubcommandBuilder, inlineCode } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -16,11 +16,11 @@ export const execute = async (interaction) => {
 
 	// Find the alarm with the specified id
 	const alarm = await Alarms.findOne({ where: { id, guildId } });
-	if (!alarm) return interaction.reply('No alarm with that id was found!');
+	if (!alarm) return interaction.reply(`No alarm with that id was found!\n Please use the ${inlineCode('/alarm list')} command to find the id of the alarm you want to remove!`);
 
 	// Delete the alarm
 	await alarm.destroy();
 
 	// Reply with a success message
-	return interaction.reply(`Successfully removed alarm with id ${id}`);
+	return interaction.reply(`Alarm with id ${inlineCode(id)} was removed!`);
 };
