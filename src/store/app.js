@@ -6,6 +6,8 @@ export const useAppStore = defineStore('app', {
 		client: null,
 		commandsActionMap: null,
 		cooldowns: new Collection(),
+
+		cardsData: null,
 	}),
 	getters: {
 		// <-- This is where you define your getters
