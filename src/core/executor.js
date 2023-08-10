@@ -1,24 +1,16 @@
 export const subCommandExecutor = async (interaction, subCommands) => {
-	const { options } = interaction;
-	const { _subcommand: subcommandName } = options;
-	const subCommand = subCommands.get(subcommandName);
-
-	try {
+	const subCommandName = interaction.options.getSubcommand(true);
+	const subCommand = subCommands.get(subCommandName);
+	if (subCommand) {
 		await subCommand.execute(interaction);
 	}
-	catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({
-				content: 'There was an error while executing this command!',
-				ephemeral: true,
-			});
-		}
-		else {
-			await interaction.reply({
-				content: 'There was an error while executing this command!',
-				ephemeral: true,
-			});
-		}
+};
+
+export const subCommandAutocomplete = async (interaction, subCommands) => {
+	const subCommandName = interaction.options.getSubcommand(true);
+	const subCommand = subCommands.get(subCommandName);
+	if (subCommand) {
+		await subCommand.autocomplete(interaction);
 	}
 };
+
