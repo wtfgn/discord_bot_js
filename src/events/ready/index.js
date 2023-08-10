@@ -20,9 +20,14 @@ export const execute = async client => {
 	await sequelize.sync({ alter: true });
 
 	// Fetch cards data
-	const cardsData = await axios.get('https://svgdb.me/api/en').then(res => res.data);
-	// Set cards data to app store
-	appStore.cardsData = cardsData;
+	try {
+		const cardsData = await axios.get('https://svgdb.me/api/en').then(res => res.data);
+		// Set cards data to app store
+		appStore.cardsData = cardsData;
+	}
+	catch (err) {
+		console.error(err);
+	}
 
 	// Check for alarms every 5 seconds
 	setInterval(() => checkAlarm(client), 5000);
