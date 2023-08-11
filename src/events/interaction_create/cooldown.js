@@ -5,19 +5,21 @@ import { useAppStore } from '@/store/app.js';
 export const checkCooldown = (interaction, command) => {
 	const appStore = useAppStore();
 	const cooldowns = appStore.cooldowns;
+	const subCommandName = interaction.options.getSubcommand();
+	const commandName = command.subCommands ? `${command.data.name} ${subCommandName}` : `${command.data.name}`;
 
 	// If cooldowns collection does not have the command name, set it
-	if (!cooldowns.has(command.data.name)) {
-		cooldowns.set(command.data.name, new Collection());
+	if (!cooldowns.has(commandName)) {
+		cooldowns.set(commandName, new Collection());
 	}
 
 	const now = Date.now();
 	// Timestamps = collection of user IDs and the time they last used the command
-	const timestamps = cooldowns.get(command.data.name);
+	const timestamps = cooldowns.get(commandName);
 	const defaultCooldown = 3;
 	// If cooldown is set, set it to the command's cooldown, otherwise set it to the default cooldown
-	const cooldownAmount = (command.cooldown || defaultCooldown) * 1000;
-
+	const commandCooldown = command.subCommands ? command.subCommands.get(subCommandName).cooldown : command.cooldown;
+	const cooldownAmount = (commandCooldown || defaultCooldown) * 1000;
 	// If timestamps collection has the user ID, set the expiration time
 	if (timestamps.has(interaction.user.id)) {
 		const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
@@ -25,7 +27,7 @@ export const checkCooldown = (interaction, command) => {
 		// If the user is still in cooldown, return the time left
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return timeLeft;
+			return { timeLeft, commandName };
 		}
 	}
 
@@ -35,5 +37,5 @@ export const checkCooldown = (interaction, command) => {
 	setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
 	// Return false if the user is not in cooldown
-	return false;
+	return { timeLeft: false, commandName };
 };

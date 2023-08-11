@@ -22,10 +22,10 @@ export const execute = async interaction => {
 		}
 
 		// Check cooldown
-		const timeLeft = checkCooldown(interaction, command);
+		const { timeLeft, commandName } = checkCooldown(interaction, command);
 		if (timeLeft) {
 			return interaction.reply({
-				content: `Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.data.name}\` command.`,
+				content: `Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${commandName}\` command.`,
 				ephemeral: true,
 			});
 		}
