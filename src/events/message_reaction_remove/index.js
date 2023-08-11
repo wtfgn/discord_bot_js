@@ -1,5 +1,4 @@
 import { Events } from 'discord.js';
-import config from '@/config.json';
 
 export const data = {
 	name: Events.MessageReactionRemove,
@@ -22,7 +21,7 @@ export const execute = async (reaction) => {
 	// Remove confirmation emoji if it is the only emoji
 	if (reaction.message.reactions.cache.size === 1) {
 		try {
-			await reaction.message.reactions.cache.get(config.confirmationEmojiID).remove();
+			await reaction.message.reactions.cache.get(process.env.CONFIRMATION_EMOJI_ID).remove();
 		}
 		catch (error) {
 			console.error('Something went wrong when removing the confirmation emoji: ', error);
