@@ -73,4 +73,4 @@ export const execute = async (interaction) => {
 	await interaction.reply({ embeds: [embed] });
 };
 
-export const cooldown = 5;
+export const cooldown = 10;

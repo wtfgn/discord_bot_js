@@ -10,3 +10,5 @@ export const execute = async (interaction) => {
 };
 
 export const subCommands = new Collection();
+
+export const cooldown = 5;
