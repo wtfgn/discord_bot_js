@@ -5,7 +5,8 @@ import { useAppStore } from '@/store/app.js';
 export const checkCooldown = (interaction, command) => {
 	const appStore = useAppStore();
 	const cooldowns = appStore.cooldowns;
-	const subCommandName = interaction.options.getSubcommand();
+	const subCommandName = interaction.options.getSubcommand(false);
+	const subCommand = command.subCommands ? command.subCommands.get(subCommandName) : null;
 	const commandName = command.subCommands ? `${command.data.name} ${subCommandName}` : `${command.data.name}`;
 
 	// If cooldowns collection does not have the command name, set it
@@ -18,7 +19,8 @@ export const checkCooldown = (interaction, command) => {
 	const timestamps = cooldowns.get(commandName);
 	const defaultCooldown = 3;
 	// If cooldown is set, set it to the command's cooldown, otherwise set it to the default cooldown
-	const commandCooldown = command.subCommands ? command.subCommands.get(subCommandName).cooldown : command.cooldown;
+	// Order of precedence: subCommand cooldown > command cooldown > default cooldown
+	const commandCooldown = subCommand && subCommand.cooldown ? subCommand.cooldown : command.cooldown;
 	const cooldownAmount = (commandCooldown || defaultCooldown) * 1000;
 	// If timestamps collection has the user ID, set the expiration time
 	if (timestamps.has(interaction.user.id)) {
