@@ -1,6 +1,6 @@
 import vueInit from '@/core/vue.js';
 // Require the necessary discord.js classes
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import { loadCommands, loadEvents } from '@/core/loader.js';
@@ -25,8 +25,18 @@ const client = new Client({
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildModeration,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.DirectMessages,
+	],
+	partials: [
+		Partials.Message,
+		Partials.GuildMember,
+		Partials.User,
+		Partials.Channel,
+		Partials.Reaction,
 	],
 });
 
