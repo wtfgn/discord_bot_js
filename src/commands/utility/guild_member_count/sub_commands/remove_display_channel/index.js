@@ -1,5 +1,5 @@
 import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
-import { Guilds } from '@/schemas/guilds';
+import { memberCountGuilds } from '@/schemas/member_count_guilds';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('remove_display_channel')
@@ -19,7 +19,7 @@ export const execute = async (interaction) => {
 	await interaction.reply({ content: 'Removing display channel...\n(If this message does not disappear, please wait 10 mins and try again)', ephemeral: true });
 
 	// Get guild from DB
-	const [ guild ] = await Guilds.findOrCreate({
+	const [ guild ] = await memberCountGuilds.findOrCreate({
 		where: {
 			guildId: interaction.guildId,
 		},
@@ -36,7 +36,7 @@ export const execute = async (interaction) => {
 	}
 
 	// Remove channel
-	await Guilds.update({
+	await memberCountGuilds.update({
 		displayChannelID: null,
 		displayChannelName: null,
 	}, {
@@ -46,7 +46,7 @@ export const execute = async (interaction) => {
 	});
 
 	// Set channel name
-	await channel.setName(Guilds.displayChannelName);
+	await channel.setName(memberCountGuilds.displayChannelName);
 	// Set channel permissions
 	await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
 

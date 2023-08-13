@@ -1,12 +1,12 @@
 import { Events } from 'discord.js';
-import { Guilds } from '@/schemas/guilds';
+import { memberCountGuilds } from '@/schemas/member_count_guilds';
 
 export const data = {
 	name: Events.GuildMemberAdd,
 };
 
 export const execute = async (member) => {
-	const guild = await Guilds.findOne({ where: { guildId: member.guild.id } });
+	const guild = await memberCountGuilds.findOne({ where: { guildId: member.guild.id } });
 	const displayChannel = member.guild.channels.cache.get(guild.displayChannelID);
 	const guildMembersCount = member.guild.memberCount;
 

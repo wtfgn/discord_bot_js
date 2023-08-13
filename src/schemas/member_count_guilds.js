@@ -1,7 +1,7 @@
 import { sequelize } from '@/index.js';
 import { DataTypes } from 'sequelize';
 
-export const Guilds = sequelize.define('guilds', {
+export const memberCountGuilds = sequelize.define('member_count_guilds', {
 	guildId: {
 		type: DataTypes.STRING,
 		primaryKey: true,

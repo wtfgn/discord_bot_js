@@ -1,5 +1,5 @@
 import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
-import { Guilds } from '@/schemas/guilds';
+import { memberCountGuilds } from '@/schemas/member_count_guilds';
 
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -20,7 +20,7 @@ export const execute = async (interaction) => {
 	const channel = options.getChannel('channel');
 
 	// Get guild from DB
-	const [ guild ] = await Guilds.findOrCreate({
+	const [ guild ] = await memberCountGuilds.findOrCreate({
 		where: {
 			guildId: interaction.guildId,
 		},
@@ -43,7 +43,7 @@ export const execute = async (interaction) => {
 	}
 
 	// Update channel
-	await Guilds.update({
+	await memberCountGuilds.update({
 		displayChannelID: channel.id,
 		displayChannelName: channel.name,
 	}, {
