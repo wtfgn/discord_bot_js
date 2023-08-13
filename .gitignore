@@ -3,3 +3,4 @@ yarn.lock
 .env
 .eslintrc.json
 *.sqlite
+yarn-error.log

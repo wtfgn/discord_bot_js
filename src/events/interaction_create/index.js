@@ -39,13 +39,13 @@ export const execute = async interaction => {
 			// If interaction is already replied or deferred
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({
-					content: 'There was an error while executing this command!',
+					content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``,
 					ephemeral: true,
 				});
 			}
 			else {
 				await interaction.reply({
-					content: 'There was an error while executing this command!',
+					content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``,
 					ephemeral: true,
 				});
 			}
