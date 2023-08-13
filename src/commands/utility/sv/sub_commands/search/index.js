@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder, EmbedBuilder, inlineCode } from 'discord.js';
 import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import cardConfigData from '../../card_config.json';
+import cardConfigData from '#/config/sv_config.json';
 import { useAppStore } from '@/store/app.js';
 
 export const data = new SlashCommandSubcommandBuilder()
