@@ -1,9 +1,8 @@
 import { Events } from 'discord.js';
-// import { Guild } from '../../schemas/guilds';
 import { sequelize } from '@/index.js';
 import { checkAlarm } from '@/commands/utility/alarm/check_alarm.js';
 import { useAppStore } from '@/store/app.js';
-import axios from 'axios';
+import { request } from 'undici';
 
 export const data = {
 	name: Events.ClientReady,
@@ -25,7 +24,7 @@ export const execute = async client => {
 
 	// Fetch cards data
 	try {
-		const cardsData = await axios.get('https://svgdb.me/api/en').then(res => res.data);
+		const cardsData = await request('https://svgdb.me/api/en').then(res => res.body.json());
 		// Set cards data to app store
 		appStore.cardsData = cardsData;
 	}
