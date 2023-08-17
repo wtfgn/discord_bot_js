@@ -3,6 +3,7 @@ import { useMainPlayer, useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { cannotJoinVoiceOrTalk } from '@/utils/validator/permission_validator.js';
 import { embedOptions, playerOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('play')
@@ -37,11 +38,13 @@ export const execute = async (interaction) => {
 		});
 	}
 	catch (error) {
-		console.error(error);
+		logger.error('Error while searching for track: ', error);
 		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``, ephemeral: true });
 	}
 
 	if (!searchResult || !searchResult.tracks.length) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with no search results`);
+
 		const embed = new EmbedBuilder();
 		embed
 			.setColor(embedOptions.colors.warning)
@@ -65,6 +68,8 @@ export const execute = async (interaction) => {
 
 	// Check if the queue is full
 	if ((searchResult.playlist && searchResult.tracks.length) > playerOptions.maxQueueSize - queueSize) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with too many tracks in playlist`);
+
 		const embed = new EmbedBuilder();
 		embed
 			.setColor(embedOptions.colors.warning)
@@ -99,9 +104,13 @@ export const execute = async (interaction) => {
 				},
 			},
 		}));
+
+		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and added track <${track.title}> to queue`);
 	}
 	catch (error) {
 		if (error.message.includes('Sign in to confirm your age')) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with age restricted track`);
+
 			const embed = new EmbedBuilder();
 			embed
 				.setColor(embedOptions.colors.warning)
@@ -110,6 +119,8 @@ export const execute = async (interaction) => {
 		}
 
 		if (error.message.includes('The following content may contain')) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with graphic or sensitive track`);
+
 			const embed = new EmbedBuilder();
 			embed
 				.setColor(embedOptions.colors.warning)
@@ -123,6 +134,8 @@ export const execute = async (interaction) => {
 					error.message.includes('Failed to fetch resources for ytdl streaming'))) ||
 			error.message.includes('Could not extract stream for this track')
 		) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with invalid track`);
+
 			const embed = new EmbedBuilder();
 			embed
 				.setColor(embedOptions.colors.error)
@@ -131,6 +144,8 @@ export const execute = async (interaction) => {
 		}
 
 		if (error.message === 'Cancelled') {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but cancelled`);
+
 			const embed = new EmbedBuilder();
 			embed
 				.setColor(embedOptions.colors.error)
@@ -139,7 +154,7 @@ export const execute = async (interaction) => {
 		}
 
 		// If the error is not handled above, log it to the console
-		console.error(error);
+		logger.error('Error while playing track: ', error);
 		// Then send a generic error message to the user
 		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``, ephemeral: true });
 	}
@@ -148,6 +163,8 @@ export const execute = async (interaction) => {
 
 	// Check if the track was added to the queue
 	if (!queue) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but failed to add track to queue`);
+
 		const embed = new EmbedBuilder();
 		embed
 			.setColor(embedOptions.colors.error)
@@ -163,6 +180,8 @@ export const execute = async (interaction) => {
 
 	// Check if the track is a playlist and has more than one track
 	if (searchResult.playlist && searchResult.tracks.length > 1) {
+		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and added a playlist to queue`);
+
 		const embed = new EmbedBuilder();
 		embed
 			.setThumbnail(track.thumbnail)
@@ -181,6 +200,8 @@ export const execute = async (interaction) => {
 
 	// Check if the track is the first track in the queue and the queue is empty
 	if (queue.currentTrack === track && queue.tracks.data.length === 0) {
+		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and started playing track <${track.title}>`);
+
 		const embed = new EmbedBuilder()
 			.setThumbnail(track.thumbnail)
 			.setAuthor({

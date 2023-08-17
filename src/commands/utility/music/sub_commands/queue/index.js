@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { embedOptions, playerOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('queue')
@@ -26,11 +27,15 @@ export const execute = async (interaction) => {
 
 	if (!queue) {
 		if (pageIndex >= 1) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`);
+
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
 				.setDescription(`**${embedOptions.icons.warning} Oops!**\nPage \`${pageIndex + 1}\` is not a valid page number.\n\nThe queue is currently empty, first add some tracks with **\`/play\`**!`);
 			return interaction.editReply({ embeds: [embed] });
 		}
+
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an empty queue`);
 
 		queueString = 'The queue is empty, add some tracks with **`/music play`**!';
 		const embed = new EmbedBuilder()
@@ -50,6 +55,8 @@ export const execute = async (interaction) => {
 	const totalPages = Math.ceil(queueLength / playerOptions.queuePerPage) || 1;
 
 	if (pageIndex >= totalPages) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`);
+
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
 			.setDescription(`**${embedOptions.icons.warning} Oops!**\nPage \`${pageIndex + 1}\` is not a valid page number.\n\nThe queue currently has \`${queueLength}\` tracks, so the last page is \`${totalPages}\`.`);
@@ -88,6 +95,8 @@ export const execute = async (interaction) => {
 		} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.\n\n`}`;
 
 	if (!currentTrack) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but there is no current track`);
+
 		const embed = new EmbedBuilder()
 			.setAuthor({
 				name: `Channel: ${queue.channel.name} (${queue.channel.bitrate / 1000}kbps)`,
@@ -114,6 +123,8 @@ export const execute = async (interaction) => {
 		if (currentTrack.raw.duration === 0 || currentTrack.duration === '0:00') {
 			bar = '_No duration available._';
 		}
+
+		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and got the queue`);
 
 		const embed = new EmbedBuilder()
 			.setAuthor({

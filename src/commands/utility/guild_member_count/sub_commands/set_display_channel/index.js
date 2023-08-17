@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
 import { memberCountGuilds } from '@/schemas/member_count_guilds';
-
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('set_display_channel')
@@ -28,11 +28,13 @@ export const execute = async (interaction) => {
 
 	// Check if channel is already set
 	if (guild.displayChannelID === channel.id) {
+		logger.debug(`User <${interaction.user.username}> tried to set display channel but it was already set`);
 		return await interaction.editReply({ content: 'Channel is already set', ephemeral: true });
 	}
 
 	// Switch to another channel
 	if (guild.displayChannelID) {
+		// Get old channel
 		const oldChannel = await interaction.guild.channels.cache.get(guild.displayChannelID);
 		const oldChannelName = guild.displayChannelName;
 

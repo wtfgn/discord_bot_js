@@ -78,5 +78,9 @@
 			"sourceSoundCloud": "🎵",
 			"sourceSpotify": "🎵"
 		}
+	},
+	"loggerOptions": {
+		"minimumLogLevel": "debug",
+		"minimumLogLevelConsole": "debug"
 	}
 }

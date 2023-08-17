@@ -4,6 +4,7 @@ import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator
 import { queueDoesNotExist, queueNoCurrentTrack } from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
 import { createNowPlayingEmbed } from '@/utils/creator/embeds/music_embeds.js';
+import { logger } from '@/services/logger.js';
 
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -35,11 +36,12 @@ export const execute = async (interaction) => {
 
 	const currentTrack = queue.currentTrack;
 
-
 	const nowPlayingActionRow = createNowPlayingActionRow('Skip track');
 	const nowPlayingEmbed = createNowPlayingEmbed(queue, currentTrack, interaction);
 
 	const response = await interaction.editReply({ embeds: [nowPlayingEmbed], components: [nowPlayingActionRow] });
+
+	logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) requested the now playing command in guild ${guild.name} (${guild.id}).`);
 
 	const collectorFilter = (i) => i.user.id === interaction.user.id;
 
@@ -52,7 +54,11 @@ export const execute = async (interaction) => {
 		await confirmation.deferUpdate();
 
 		if (confirmation.customId === 'nowplaying-skip') {
+			logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) used the skip button in guild ${guild.name} (${guild.id}).`);
+
 			if (!queue || (queue.tracks.data.length === 0 && !queue.currentTrack)) {
+				logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) tried to skip a track in guild ${guild.name} (${guild.id}), but there is nothing playing.`);
+
 				const errorEmbed = new EmbedBuilder()
 					.setColor(embedOptions.colors.warning)
 					.setDescription(
@@ -62,6 +68,8 @@ export const execute = async (interaction) => {
 			}
 
 			if (queue.currentTrack !== currentTrack) {
+				logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) tried to skip a track in guild ${guild.name} (${guild.id}), but the track has already been skipped.`);
+
 				const errorEmbed = new EmbedBuilder()
 					.setColor(embedOptions.colors.warning)
 					.setDescription(
@@ -83,6 +91,8 @@ export const execute = async (interaction) => {
 					: `\`${skippedTrack.duration}\``;
 
 			queue.node.skip();
+
+			logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) skipped a track in guild ${guild.name} (${guild.id}).`);
 
 			const repeatModeUserString = loopModesFormatted.get(queue.repeatMode);
 
@@ -109,6 +119,8 @@ export const execute = async (interaction) => {
 	}
 	catch (error) {
 		if (error.code === 'InteractionCollectorError') {
+			logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) did not interact with the buttons in time in guild ${guild.name} (${guild.id}).`);
+
 			const errorEmbed = new EmbedBuilder()
 				.setColor(embedOptions.colors.error)
 				.setDescription(
@@ -117,7 +129,8 @@ export const execute = async (interaction) => {
 			return interaction.followUp({ embeds: [errorEmbed], components: [] });
 		}
 		else {
-			console.log(error);
+			logger.error(`An error occurred while executing the now playing command: ${error}`);
+			throw error;
 		}
 	}
 };

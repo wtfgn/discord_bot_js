@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder, inlineCode } from 'discord
 import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import cardConfigData from '#/config/sv_config.json';
 import { useAppStore } from '@/store/app.js';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('search')
@@ -87,6 +88,7 @@ export const execute = async (interaction) => {
 
 	// Check if there are any cards
 	if (filteredCards.length === 0) {
+		logger.debug(`User <${interaction.user.username}> tried to search for a card but no cards were found`);
 		return interaction.reply({
 			content: 'No cards found!',
 			ephemeral: true,
@@ -226,6 +228,7 @@ export const execute = async (interaction) => {
 	// Handle the end of the collector
 	collector.on('end', async (collected, reason) => {
 		if (reason === 'time') {
+			logger.debug(`User <${interaction.user.username}> timed out while searching for a card`);
 			await interaction.editReply({
 				content: 'The card selection menu has timed out.',
 				components: [],

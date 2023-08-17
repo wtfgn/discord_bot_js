@@ -1,4 +1,5 @@
 import { Player } from 'discord-player';
+import { logger } from '@/services/logger.js';
 
 export const createPlayer = async (client) => {
 
@@ -19,9 +20,10 @@ export const createPlayer = async (client) => {
 		// Load extractors
 		await discordPlayer.extractors.loadDefault();
 
+		logger.info('Successfully created Discord player');
 		return discordPlayer;
 	}
 	catch (err) {
-		console.error(err);
+		logger.error('Failed to create Discord player', err);
 	}
 };

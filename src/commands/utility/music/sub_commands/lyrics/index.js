@@ -5,6 +5,7 @@ import { queueDoesNotExist, queueNoCurrentTrack } from '@/utils/validator/queue_
 import { embedOptions } from '#/config/config.json';
 import { lyricsExtractor } from '@discord-player/extractor';
 import { inlineCode } from 'discord.js';
+import { logger } from '@/services/logger.js';
 
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -45,6 +46,8 @@ export const execute = async (interaction) => {
 		});
 
 		if (searchResults.tracks.length === 0) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with no search results`);
+
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
 				.setDescription(
@@ -94,15 +97,18 @@ export const execute = async (interaction) => {
 			!lyricsResultArtistIncludesAuthor &&
 			!searchResultAuthorSplitIncludesArtist
 		) {
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with no matching artist`);
+
 			nonMatchMessage =
 				'Found lyrics, but artist name did not match from player result.\n' +
 				`**Player result:** ${searchResult.author}\n` +
 				`**Genius result:** ${lyricsResult.artist.name}`;
-			console.log('Found lyrics, but artist name did not match from player result.');
 		}
 	}
 
 	if (!lyricsResult || !lyricsResult.lyrics) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with no lyrics found`);
+
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
 			.setDescription(
@@ -114,11 +120,11 @@ export const execute = async (interaction) => {
 
 	// If message length is too long, split into multiple messages
 	if (lyricsResult.lyrics.length > 3800) {
-		console.log('Lyrics too long, splitting into multiple messages');
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with too long lyrics`);
 		const messageCount = Math.ceil(lyricsResult.lyrics.length / 3800);
 
 		for (let i = 0; i < messageCount; i++) {
-			console.log(`Sending message ${i + 1}/${messageCount}`);
+			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with too long lyrics, sending message ${i + 1}/${messageCount}`);
 			const message = lyricsResult.lyrics.slice(i * 3800, (i + 1) * 3800);
 
 			if (i === 0) {
@@ -146,6 +152,8 @@ export const execute = async (interaction) => {
 
 		return;
 	}
+
+	logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and got lyrics`);
 
 	const embed = new EmbedBuilder()
 		.setColor(embedOptions.colors.info)
@@ -196,5 +204,6 @@ export const autocomplete = async (interaction) => {
 		return interaction.respond([]);
 	}
 
+	logger.debug(`Autocomplete search responded for query: ${query}`);
 	return interaction.respond(response);
 };

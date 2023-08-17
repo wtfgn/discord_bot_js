@@ -1,6 +1,7 @@
 import { REST, Routes, Collection } from 'discord.js';
 import fg from 'fast-glob';
 import { useAppStore } from '@/store/app.js';
+import { logger } from '@/services/logger.js';
 
 const updateSlashCommands = async (guildID, commandData) => {
 	const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
@@ -9,10 +10,10 @@ const updateSlashCommands = async (guildID, commandData) => {
 			Routes.applicationGuildCommands(process.env.CLIENT_ID, guildID),
 			{ body: commandData },
 		);
-		console.log(`Successfully registered ${result.length} application commands.`);
+		logger.info(`Successfully registered ${result.length} slash commands for guild ${guildID}`);
 	}
 	catch (error) {
-		console.error(error);
+		logger.error('Failed to register slash commands', error);
 	}
 };
 
@@ -44,7 +45,7 @@ export const loadCommands = async () => {
 			commands.set(command.data.name, command);
 		}
 		else {
-			console.error(`Command ${file} is missing data or execute property`);
+			logger.error(`Command ${file} is missing data or execute property`);
 		}
 	}
 	// Set commands collection to app store
@@ -78,16 +79,19 @@ export const loadSubCommands = async (commandName) => {
 	for (const file of files) {
 		// Import sub command
 		const subCommand = await import(file);
+		const subCommandNames = [];
 		// Check if sub command has data and execute properties
 		if ('data' in subCommand && 'execute' in subCommand) {
 			// Add sub command to map
 			subCommands.set(subCommand.data.name, subCommand);
+			// Add sub command name to array
+			subCommandNames.push(subCommand.data.name);
 		}
 		else {
-			console.error(`Sub command ${file} is missing data or execute property`);
+			logger.error(`Sub command ${file} is missing data or execute property`);
 		}
 	}
-	console.log(`Loaded ${subCommands.size} sub commands for ${commandName}`);
+	logger.info(`Successfully loaded ${subCommands.size} sub commands - [ ${subCommands.map((subCommand) => subCommand.data.name).join(', ')} ] for command ${commandName}`);
 	return subCommands;
 };
 
@@ -107,7 +111,7 @@ export const loadPlayerEvents = async (discordPlayer) => {
 					: discordPlayer.on(event.data.name, (...args) => event.execute(...args)));
 		}
 		else {
-			console.error(`Event ${file} is missing data or execute property`);
+			logger.error(`Event ${file} is missing data or execute property`);
 		}
 	}
 };
@@ -119,10 +123,10 @@ export const deleteGuildCommands = async () => {
 			Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
 			{ body: [] },
 		);
-		console.log('Successfully deleted guild commands.');
+		logger.info('Successfully deleted guild commands.');
 	}
 	catch (error) {
-		console.error(error);
+		logger.error('Failed to delete guild commands', error);
 	}
 };
 
@@ -133,9 +137,9 @@ export const deleteGlobalCommands = async () => {
 			Routes.applicationCommands(process.env.CLIENT_ID),
 			{ body: [] },
 		);
-		console.log('Successfully deleted global commands.');
+		logger.info('Successfully deleted global commands.');
 	}
 	catch (error) {
-		console.error(error);
+		logger.error('Failed to delete global commands', error);
 	}
 };

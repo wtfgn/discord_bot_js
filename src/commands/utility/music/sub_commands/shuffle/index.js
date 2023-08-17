@@ -3,6 +3,7 @@ import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist, queueIsEmpty } from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('shuffle')
@@ -25,6 +26,8 @@ export const execute = async (interaction) => {
 
 	// Shuffle the queue
 	queue.tracks.shuffle();
+
+	logger.debug(`User <${user.username}> shuffled the queue in guild ${guild.name} (${guild.id}).`);
 
 	const embed = new EmbedBuilder()
 		.setAuthor({

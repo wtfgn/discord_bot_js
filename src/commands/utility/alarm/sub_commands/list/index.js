@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder, EmbedBuilder, inlineCode } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('list')
@@ -18,6 +19,7 @@ export const execute = async (interaction) => {
 
 	// If there are no alarms, send a message
 	if (alarms.length === 0) {
+		logger.debug(`User <${interaction.user.username}> tried to list alarms but there were none`);
 		return interaction.reply({
 			content: `You have no alarms set!\nPlease use the ${inlineCode('/alarm add')} command to set an alarm!`,
 			ephemeral: true,

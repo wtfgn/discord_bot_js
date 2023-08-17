@@ -4,3 +4,4 @@ yarn.lock
 .eslintrc.json
 *.sqlite
 yarn-error.log
+logs

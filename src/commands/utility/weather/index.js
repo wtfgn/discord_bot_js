@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import dayjs from 'dayjs';
 import { fetchWeatherData } from './fetcher';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandBuilder()
 	.setName('weather')
@@ -15,6 +16,7 @@ export const execute = async (interaction) => {
 	const weatherData = await fetchWeatherData(city);
 
 	if (weatherData.cod === '404') {
+		logger.debug(`User <${interaction.user.username}> tried to get weather data for city ${city} but it was not found`);
 		return interaction.reply({
 			content: 'City not found!',
 			ephemeral: true,
@@ -22,6 +24,7 @@ export const execute = async (interaction) => {
 	}
 
 	if (weatherData.cod !== 200) {
+		logger.debug(`User <${interaction.user.username}> tried to get weather data for city ${city} but something went wrong`);
 		return interaction.reply({
 			content: 'Something went wrong!',
 			ephemeral: true,
@@ -99,8 +102,5 @@ export const execute = async (interaction) => {
 		});
 	}
 
-	await interaction.reply({
-		embeds: [embed],
-		ephemeral: true,
-	});
+	return interaction.reply({ embeds: [embed], ephemeral: true });
 };

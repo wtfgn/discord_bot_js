@@ -3,6 +3,7 @@ import { sequelize } from '@/index.js';
 import { checkAlarm } from '@/commands/utility/alarm/check_alarm.js';
 import { useAppStore } from '@/store/app.js';
 import { request } from 'undici';
+import { logger } from '@/services/logger.js';
 
 export const data = {
 	name: Events.ClientReady,
@@ -16,11 +17,13 @@ export const execute = async client => {
 	// When under development:
 	// Use { force: true } to drop all tables and recreate them
 	// Use { alter: true } to alter the tables to fit the models
-	await sequelize.sync({ alter: true });
-
-	// .on('debug', console.log)
-	// .on('debug', (queue, message) => console.log(`[DEBUG ${queue.guild.id}] ${message}`));
-
+	try {
+		await sequelize.sync({ alter: true });
+		logger.info('Successfully synced models to the database');
+	}
+	catch (error) {
+		logger.error('Failed to sync models to the database', error);
+	}
 
 	// Fetch cards data
 	try {
@@ -28,8 +31,8 @@ export const execute = async client => {
 		// Set cards data to app store
 		appStore.cardsData = cardsData;
 	}
-	catch (err) {
-		console.error(err);
+	catch (error) {
+		logger.error('Failed to fetch cards data', error);
 	}
 
 	// Check for alarms every 5 seconds, do not hang the event loop
@@ -37,5 +40,5 @@ export const execute = async client => {
 		checkAlarm(client);
 	}, 5000);
 
-	console.log(`Ready! Logged in as ${client.user.tag}`);
+	logger.info(`Logged in as ${client.user.tag}!`);
 };

@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const queueDoesNotExist = async (interaction, queue) => {
 	if (!queue) {
@@ -11,6 +12,7 @@ export const queueDoesNotExist = async (interaction, queue) => {
 			await interaction.editReply({ embeds: [embed] }) :
 			await interaction.reply({ embeds: [embed], ephemeral: true });
 
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without a queue`);
 		return true;
 	}
 
@@ -27,6 +29,7 @@ export const queueNoCurrentTrack = async (interaction, queue) => {
 			await interaction.editReply({ embeds: [embed] }) :
 			await interaction.reply({ embeds: [embed], ephemeral: true });
 
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without a current track`);
 		return true;
 	}
 
@@ -43,6 +46,7 @@ export const queueIsEmpty = async (interaction, queue) => {
 			await interaction.editReply({ embeds: [embed] }) :
 			await interaction.reply({ embeds: [embed], ephemeral: true });
 
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without any tracks in the queue`);
 		return true;
 	}
 

@@ -3,6 +3,7 @@ import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist } from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('loop')
@@ -57,6 +58,8 @@ export const execute = async (interaction) => {
 
 	// If the mode is same as current mode, return
 	if (mode === currentMode) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`);
+
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
 			.setDescription(
@@ -70,6 +73,8 @@ export const execute = async (interaction) => {
 
 	// If the mode is not set to the provided mode, return
 	if (!queue.repeatMode === mode) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`);
+
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.error)
 			.setDescription(

@@ -3,6 +3,7 @@ import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist, queueNoCurrentTrack } from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('pause_resume')
@@ -31,6 +32,8 @@ export const execute = async (interaction) => {
 
 	// change paused state to opposite of current state
 	queue.node.setPaused(!queue.node.isPaused());
+
+	logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) ${queue.node.isPaused() ? 'paused' : 'resumed'} the track in guild ${guild.name} (${guild.id}).`);
 
 	const embed = new EmbedBuilder()
 		.setAuthor({

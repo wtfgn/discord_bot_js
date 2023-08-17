@@ -1,6 +1,7 @@
 import { Events } from 'discord.js';
 import { useAppStore } from '@/store/app.js';
 import { checkCooldown } from './cooldown.js';
+import { logger } from '@/services/logger.js';
 
 export const data = {
 	name: Events.InteractionCreate,
@@ -17,7 +18,7 @@ export const execute = async interaction => {
 	if (interaction.isChatInputCommand()) {
 		// Check if command exists
 		if (!command) {
-			console.error(`Command ${interaction.commandName} does not exist`);
+			logger.error(`Command ${interaction.commandName} does not exist`);
 			return;
 		}
 
@@ -35,7 +36,7 @@ export const execute = async interaction => {
 			await command.execute(interaction);
 		}
 		catch (error) {
-			console.error(error);
+			logger.error('Failed to execute command', error);
 			// If interaction is already replied or deferred
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({
@@ -53,7 +54,7 @@ export const execute = async interaction => {
 	}
 	else if (interaction.isAutocomplete()) {
 		if (!command) {
-			console.error(`Command ${interaction.commandName} does not exist`);
+			logger.error(`Command ${interaction.commandName} does not exist`);
 			return;
 		}
 
@@ -62,7 +63,7 @@ export const execute = async interaction => {
 			await command.autocomplete(interaction);
 		}
 		catch (error) {
-			console.error(error);
+			logger.error('Failed to execute autocomplete', error);
 		}
 	}
 };

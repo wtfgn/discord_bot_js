@@ -3,6 +3,7 @@ import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist, queueIsEmpty } from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('skip')
@@ -35,6 +36,8 @@ export const execute = async (interaction) => {
 	if (skipToTrack) {
 		// Check if the track number is valid
 		if (skipToTrack > queue.tracks.data.length) {
+			logger.debug(`User ${user.username} used the skip command with an invalid track number.`);
+
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
 				.setDescription(
@@ -51,6 +54,8 @@ export const execute = async (interaction) => {
 					`\`${skippedTrack.duration}\``;
 
 			queue.node.skipTo(skipToTrack - 1);
+
+			logger.debug(`User ${user.username} skipped to track ${skipToTrack}.`);
 
 			const embed = new EmbedBuilder()
 				.setAuthor({
@@ -69,6 +74,8 @@ export const execute = async (interaction) => {
 		// Check if there is any tracks in the queue
 		// eslint-disable-next-line no-lonely-if
 		if (queue.tracks.data.length === 0 && !queue.currentTrack) {
+			logger.debug(`User ${user.username} used the skip command with no tracks in the queue or currently playing.`);
+
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
 				.setDescription(
@@ -95,6 +102,8 @@ export const execute = async (interaction) => {
 	]);
 
 	const loopModeUserString = loopModesFormatted.get(queue.repeatMode);
+
+	logger.debug(`User ${user.username} skipped the current track.`);
 
 	const embed = new EmbedBuilder()
 		.setAuthor({

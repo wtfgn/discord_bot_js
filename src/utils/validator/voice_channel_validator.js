@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const notInVoiceChannel = async (interaction) => {
 	if (!interaction.member.voice.channel) {
@@ -8,6 +9,8 @@ export const notInVoiceChannel = async (interaction) => {
 		(interaction.deferred || interaction.replied) ?
 			await interaction.editReply({ embeds: [embed] }) :
 			await interaction.reply({ embeds: [embed], ephemeral: true });
+
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without being in a voice channel`);
 		return true;
 	}
 
@@ -23,6 +26,8 @@ export const notInSameVoiceChannel = async (interaction, queue) => {
 		(interaction.deferred || interaction.replied) ?
 			await interaction.editReply({ embeds: [embed] }) :
 			await interaction.reply({ embeds: [embed], ephemeral: true });
+
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without being in the same voice channel as the bot`);
 		return true;
 	}
 

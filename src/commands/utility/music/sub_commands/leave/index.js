@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('leave')
@@ -16,6 +17,8 @@ export const execute = async (interaction) => {
 
 	// Check if the queue exists
 	if (!queue) {
+		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without a queue`);
+
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
 			.setDescription(

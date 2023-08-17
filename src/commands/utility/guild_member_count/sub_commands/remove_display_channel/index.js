@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder, ChannelType } from 'discord.js';
 import { memberCountGuilds } from '@/schemas/member_count_guilds';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('remove_display_channel')
@@ -27,11 +28,13 @@ export const execute = async (interaction) => {
 
 	// Check if channel is already set
 	if (!guild.displayChannelID) {
+		logger.debug(`User <${interaction.user.username}> tried to remove display channel but it was not set`);
 		return await interaction.editReply({ content: 'Channel is not set', ephemeral: true });
 	}
 
 	// Check if channel is the same
 	if (guild.displayChannelID !== channel.id) {
+		logger.debug(`User <${interaction.user.username}> tried to remove display channel but it was not the same`);
 		return await interaction.editReply({ content: 'Channel is not the same', ephemeral: true });
 	}
 

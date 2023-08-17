@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder, inlineCode } from 'discord.js';
 import { Alarms } from '@/schemas/alarms.js';
 import dayjs from 'dayjs';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('add')
@@ -54,6 +55,7 @@ export const execute = async (interaction) => {
 
 	// Check if the time is in the past
 	if (time.isBefore(dayjs())) {
+		logger.debug(`User <${interaction.user.username}> tried to set an alarm in the past <${time.format('YYYY-MM-DD HH:mm:ss')}>`);
 		return interaction.reply({
 			content: `The time you specified is in the past!\nPlease specify a time after ${inlineCode(dayjs().format('YYYY-MM-DD HH:mm:ss'))}`,
 			ephemeral: true,
