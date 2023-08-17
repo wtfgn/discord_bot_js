@@ -1,5 +1,5 @@
 import { Collection, SlashCommandBuilder } from 'discord.js';
-import { subCommandExecutor } from '@/core/executor.js';
+import { subCommandExecutor } from '@/utils/executor.js';
 
 export const data = new SlashCommandBuilder()
 	.setName('info')
