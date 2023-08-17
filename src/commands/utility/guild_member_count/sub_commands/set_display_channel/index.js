@@ -19,7 +19,7 @@ export const execute = async (interaction) => {
 	const memberCount = interaction.guild.memberCount;
 	const channel = options.getChannel('channel');
 
-	// Get guild from DB
+	// Get guild from DB, if not found, create one
 	const [ guild ] = await memberCountGuilds.findOrCreate({
 		where: {
 			guildId: interaction.guildId,
