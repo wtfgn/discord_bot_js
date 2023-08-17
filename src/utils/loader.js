@@ -56,7 +56,7 @@ export const loadCommands = async () => {
 export const loadEvents = async () => {
 	const appStore = useAppStore();
 	const client = appStore.client;
-	const files = await fg('./src/events/**/index.js');
+	const files = await fg('./src/events/client/**/index.js');
 	for (const file of files) {
 		const event = await import(file);
 		// Check if event has data and execute properties
@@ -89,4 +89,53 @@ export const loadSubCommands = async (commandName) => {
 	}
 	console.log(`Loaded ${subCommands.size} sub commands for ${commandName}`);
 	return subCommands;
+};
+
+export const loadPlayerEvents = async (discordPlayer) => {
+	const files = await fg('./src//events/discord_player/**/index.js');
+	for (const file of files) {
+		const event = await import(file);
+		// Check if event is debug, if so, skip
+		if (event.isDebug) { continue; }
+		// Check if event has data and execute properties
+		if ('data' in event && 'execute' in event) {
+			// Set event listener
+			event.data.once ?
+				discordPlayer.once(event.data.name, (...args) => event.execute(...args))
+				: (event.isPlayerEvent ?
+					discordPlayer.events.on(event.data.name, (...args) => event.execute(...args))
+					: discordPlayer.on(event.data.name, (...args) => event.execute(...args)));
+		}
+		else {
+			console.error(`Event ${file} is missing data or execute property`);
+		}
+	}
+};
+
+export const deleteGuildCommands = async () => {
+	const rest = new REST().setToken(process.env.BOT_TOKEN);
+	try {
+		await rest.put(
+			Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+			{ body: [] },
+		);
+		console.log('Successfully deleted guild commands.');
+	}
+	catch (error) {
+		console.error(error);
+	}
+};
+
+export const deleteGlobalCommands = async () => {
+	const rest = new REST().setToken(process.env.BOT_TOKEN);
+	try {
+		await rest.put(
+			Routes.applicationCommands(process.env.CLIENT_ID),
+			{ body: [] },
+		);
+		console.log('Successfully deleted global commands.');
+	}
+	catch (error) {
+		console.error(error);
+	}
 };
