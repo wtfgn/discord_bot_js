@@ -9,9 +9,6 @@ export const useAppStore = defineStore('app', {
 
 		// Shadowverse's card data
 		cardsData: null,
-
-		// Discord music player
-		distube : null,
 	}),
 	getters: {
 		// <-- This is where you define your getters
