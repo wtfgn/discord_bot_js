@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder, ButtonBuilder, ActionRowBu
 import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist, queueNoCurrentTrack } from '@/utils/validator/queue_validator.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 import { createNowPlayingEmbed } from '@/utils/creator/embeds/music_embeds.js';
 
 

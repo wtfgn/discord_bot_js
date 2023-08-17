@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { embedOptions, playerOptions } from '#/config/config.js';
+import { embedOptions, playerOptions } from '#/config/config.json';
 
 export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 	const sourceStringsFormatted = new Map([

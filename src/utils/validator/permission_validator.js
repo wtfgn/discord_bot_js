@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 
 export const cannotJoinVoiceOrTalk = async (interaction) => {
 	const voiceChannel = interaction.member.voice.channel;

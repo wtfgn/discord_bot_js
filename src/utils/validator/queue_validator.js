@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 
 export const queueDoesNotExist = async (interaction, queue) => {
 	if (!queue) {

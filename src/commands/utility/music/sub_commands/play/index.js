@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useMainPlayer, useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { cannotJoinVoiceOrTalk } from '@/utils/validator/permission_validator.js';
-import { embedOptions, playerOptions } from '#/config/config.js';
+import { embedOptions, playerOptions } from '#/config/config.json';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('play')

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 
 export const notInVoiceChannel = async (interaction) => {
 	if (!interaction.member.voice.channel) {

@@ -1,0 +1,82 @@
+{
+	"botOptions": {
+		"name": "Three Small Birds",
+		"websiteUrl": "Unknown",
+		"botInviteUrl": "Unknown",
+		"serverInviteUrl": "Unknown"
+	},
+	"playerOptions": {
+		"leaveOnEmpty": true,
+		"leaveOnEmptyCooldown": 300000,
+		"leaveOnEnd": true,
+		"leaveOnEndCooldown": 300000,
+		"leaveOnStop": true,
+		"leaveOnStopCooldown": 300000,
+		"defaultVolume": 50,
+		"maxQueueSize": 10000,
+		"maxHistorySize": 100,
+		"bufferingTimeout": 3000,
+		"connectionTimeout": 30000,
+		"queuePerPage": 10,
+		"progressBar": {
+			"length": 14,
+			"timecodes": false,
+			"separator": "┃",
+			"indicator": "🔘",
+			"leftChar": "▬",
+			"rightChar": "▬"
+		}
+	},
+	"embedOptions": {
+		"colors": {
+			"success": "#23A55A",
+			"warning": "#F0B232",
+			"error": "#F23F43",
+			"info": "#5865F2",
+			"note": "#80848E"
+		},
+		"icons": {
+			"logo": "🤖",
+			"beta": "`beta`",
+			"new": "`new`",
+			"rule": "📒",
+			"support": "❓",
+			"bot": "🤖",
+			"server": "🖥️",
+			"discord": "🌐",
+			"audioPlaying": "🎶",
+			"audioStartedPlaying": "🎶",
+			"success": "✅",
+			"error": "⚠️",
+			"warning": "⚠️",
+			"disable": "🚫",
+			"enable": "✅",
+			"disabled": "✅",
+			"enabled": "✅",
+			"nextTrack": "⏭️",
+			"previousTrack": "⏮️",
+			"pauseResumeTrack": "⏯️",
+			"shuffleQueue": "🔀",
+			"loop": "🔁",
+			"loopAction": "🔁",
+			"autoplay": "♾️",
+			"autoplayAction": "♾️",
+			"looping": "🔁",
+			"autoplaying": "♾️",
+			"skipped": "⏭️",
+			"back": "⏮️",
+			"pauseResumed": "⏯️",
+			"shuffled": "🔀",
+			"volume": "🔊",
+			"volumeIsMuted": "🔇",
+			"volumeChanged": "🔊",
+			"volumeMuted": "🔇",
+			"queue": "🎶",
+			"sourceArbitrary": "🎵",
+			"sourceAppleMusic": "🎵",
+			"sourceYouTube": "🎵",
+			"sourceSoundCloud": "🎵",
+			"sourceSpotify": "🎵"
+		}
+	}
+}

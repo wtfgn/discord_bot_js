@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('leave')

@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useMainPlayer, useQueue, QueryType } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 import { queueDoesNotExist, queueNoCurrentTrack } from '@/utils/validator/queue_validator.js';
-import { embedOptions } from '#/config/config.js';
+import { embedOptions } from '#/config/config.json';
 import { lyricsExtractor } from '@discord-player/extractor';
 import { inlineCode } from 'discord.js';
 
