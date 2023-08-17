@@ -3,7 +3,7 @@ import vueInit from '@/core/vue.js';
 import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import { loadCommands, loadEvents, loadPlayerEvents, deleteGuildCommands, deleteGlobalCommands } from '@/utils/loader.js';
+import { loadCommands, loadEvents, loadPlayerEvents } from '@/utils/loader.js';
 import { useAppStore } from '@/store/app.js';
 import { createPlayer } from '@/core/discord_player/create_player.js';
 
@@ -55,8 +55,8 @@ client.login(process.env.BOT_TOKEN);
 
 (async () => {
 	// Delete all commands
-	await deleteGuildCommands();
-	await deleteGlobalCommands();
+	// await deleteGuildCommands();
+	// await deleteGlobalCommands();
 
 	// Load commands and events
 	await loadCommands();
