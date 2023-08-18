@@ -30,6 +30,8 @@ export const execute = async client => {
 		const cardsData = await request('https://svgdb.me/api/en').then(res => res.body.json());
 		// Set cards data to app store
 		appStore.cardsData = cardsData;
+
+		logger.info('Successfully fetched cards data');
 	}
 	catch (err) {
 		logger.error(err, 'Failed to fetch cards data');
