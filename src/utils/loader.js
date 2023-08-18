@@ -6,21 +6,36 @@ import { logger } from '@/services/logger.js';
 const updateSlashCommands = async (guildID, commandData) => {
 	const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
 	try {
-		const result = await rest.put(
-			Routes.applicationGuildCommands(process.env.CLIENT_ID, guildID),
-			{ body: commandData },
-		);
-		logger.info(`Successfully registered ${result.length} slash commands for guild ${guildID}`);
+		if (guildID) {
+			const result = await rest.put(
+				Routes.applicationGuildCommands(process.env.CLIENT_ID, guildID),
+				{ body: commandData },
+			);
+			logger.info(`Successfully registered ${result.length} slash commands for guild ${guildID}`);
+		}
+		else {
+			const result = await rest.put(
+				Routes.applicationCommands(process.env.CLIENT_ID),
+				{ body: commandData },
+			);
+			logger.info(`Successfully registered ${result.length} slash commands globally`);
+		}
 	}
-	catch (error) {
-		logger.error('Failed to register slash commands', error);
+	catch (err) {
+		logger.error(err, 'Failed to register slash commands');
 	}
 };
 
-export const loadCommands = async () => {
+export const loadCommands = async (client = null) => {
 	const appStore = useAppStore();
 	const commandData = [];
 	const commands = new Collection();
+
+	// If client is not passed, use app store client
+	if (!client) {
+		client = appStore.client;
+	}
+
 	// If the index.js is in a sub_commands folder, do not load it
 	const files = await fg('./src/commands/**/index.js', { ignore: './src/commands/**/sub_commands/**/index.js' });
 	for (const file of files) {
@@ -51,12 +66,17 @@ export const loadCommands = async () => {
 	// Set commands collection to app store
 	appStore.commandsActionMap = commands;
 	// Update slash commands
-	updateSlashCommands(process.env.GUILD_ID, commandData);
+	await updateSlashCommands(process.env.GUILD_ID, commandData);
 };
 
-export const loadEvents = async () => {
+export const loadEvents = async (client = null) => {
 	const appStore = useAppStore();
-	const client = appStore.client;
+
+	// If client is not passed, use app store client
+	if (!client) {
+		client = appStore.client;
+	}
+
 	const files = await fg('./src/events/client/**/index.js');
 	for (const file of files) {
 		const event = await import(file);
@@ -119,14 +139,20 @@ export const loadPlayerEvents = async (discordPlayer) => {
 export const deleteGuildCommands = async () => {
 	const rest = new REST().setToken(process.env.BOT_TOKEN);
 	try {
+		if (!process.env.GUILD_ID) {
+			logger.error('GUILD_ID is not set in .env file');
+			return;
+		}
+
 		await rest.put(
 			Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
 			{ body: [] },
 		);
+
 		logger.info('Successfully deleted guild commands.');
 	}
-	catch (error) {
-		logger.error('Failed to delete guild commands', error);
+	catch (err) {
+		logger.error(err, 'Failed to delete guild commands');
 	}
 };
 
@@ -139,7 +165,7 @@ export const deleteGlobalCommands = async () => {
 		);
 		logger.info('Successfully deleted global commands.');
 	}
-	catch (error) {
-		logger.error('Failed to delete global commands', error);
+	catch (err) {
+		logger.error(err, 'Failed to delete global commands');
 	}
 };

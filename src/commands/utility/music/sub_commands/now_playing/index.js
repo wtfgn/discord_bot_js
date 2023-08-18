@@ -117,8 +117,8 @@ export const execute = async (interaction) => {
 			return interaction.followUp({ embeds: [skippedTrackEmbed], components: [] });
 		}
 	}
-	catch (error) {
-		if (error.code === 'InteractionCollectorError') {
+	catch (err) {
+		if (err.code === 'InteractionCollectorError') {
 			logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) did not interact with the buttons in time in guild ${guild.name} (${guild.id}).`);
 
 			const errorEmbed = new EmbedBuilder()
@@ -129,8 +129,8 @@ export const execute = async (interaction) => {
 			return interaction.followUp({ embeds: [errorEmbed], components: [] });
 		}
 		else {
-			logger.error(`An error occurred while executing the now playing command: ${error}`);
-			throw error;
+			logger.error(err, 'An error occurred while executing the now playing command');
+			throw err;
 		}
 	}
 };

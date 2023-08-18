@@ -35,18 +35,18 @@ export const execute = async interaction => {
 		try {
 			await command.execute(interaction);
 		}
-		catch (error) {
-			logger.error('Failed to execute command', error);
+		catch (err) {
+			logger.error(err, 'Failed to execute command');
 			// If interaction is already replied or deferred
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp({
-					content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``,
+					content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``,
 					ephemeral: true,
 				});
 			}
 			else {
 				await interaction.reply({
-					content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``,
+					content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``,
 					ephemeral: true,
 				});
 			}
@@ -62,8 +62,8 @@ export const execute = async interaction => {
 		try {
 			await command.autocomplete(interaction);
 		}
-		catch (error) {
-			logger.error('Failed to execute autocomplete', error);
+		catch (err) {
+			logger.error(err, 'Failed to execute autocomplete');
 		}
 	}
 };

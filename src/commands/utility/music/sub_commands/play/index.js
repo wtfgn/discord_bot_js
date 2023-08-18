@@ -37,9 +37,9 @@ export const execute = async (interaction) => {
 			requestedBy: user,
 		});
 	}
-	catch (error) {
-		logger.error('Error while searching for track: ', error);
-		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``, ephemeral: true });
+	catch (err) {
+		logger.error(err, 'Error while searching for track: ');
+		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``, ephemeral: true });
 	}
 
 	if (!searchResult || !searchResult.tracks.length) {
@@ -107,8 +107,8 @@ export const execute = async (interaction) => {
 
 		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and added track <${track.title}> to queue`);
 	}
-	catch (error) {
-		if (error.message.includes('Sign in to confirm your age')) {
+	catch (err) {
+		if (err.message.includes('Sign in to confirm your age')) {
 			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with age restricted track`);
 
 			const embed = new EmbedBuilder();
@@ -118,7 +118,7 @@ export const execute = async (interaction) => {
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-		if (error.message.includes('The following content may contain')) {
+		if (err.message.includes('The following content may contain')) {
 			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with graphic or sensitive track`);
 
 			const embed = new EmbedBuilder();
@@ -129,10 +129,10 @@ export const execute = async (interaction) => {
 		}
 
 		if (
-			(error.type === 'TypeError' &&
-				(error.message.includes('Cannot read properties of null (reading \'createStream\')') ||
-					error.message.includes('Failed to fetch resources for ytdl streaming'))) ||
-			error.message.includes('Could not extract stream for this track')
+			(err.type === 'TypeError' &&
+				(err.message.includes('Cannot read properties of null (reading \'createStream\')') ||
+					err.message.includes('Failed to fetch resources for ytdl streaming'))) ||
+			err.message.includes('Could not extract stream for this track')
 		) {
 			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with invalid track`);
 
@@ -143,7 +143,7 @@ export const execute = async (interaction) => {
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-		if (error.message === 'Cancelled') {
+		if (err.message === 'Cancelled') {
 			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but cancelled`);
 
 			const embed = new EmbedBuilder();
@@ -154,9 +154,9 @@ export const execute = async (interaction) => {
 		}
 
 		// If the error is not handled above, log it to the console
-		logger.error('Error while playing track: ', error);
+		logger.error('Error while playing track: ', err);
 		// Then send a generic error message to the user
-		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${error}\`\`\``, ephemeral: true });
+		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``, ephemeral: true });
 	}
 
 	queue = useQueue(guild.id);

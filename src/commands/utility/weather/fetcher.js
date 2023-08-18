@@ -13,8 +13,8 @@ export const fetchWeatherData = async (city) => {
 	try {
 		response = await axios.get(url, { params });
 	}
-	catch (error) {
-		logger.error('Failed to fetch weather data', error);
+	catch (err) {
+		logger.error(err, 'Failed to fetch weather data');
 	}
 
 	return response.data;

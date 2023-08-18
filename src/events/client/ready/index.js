@@ -21,8 +21,8 @@ export const execute = async client => {
 		await sequelize.sync({ alter: true });
 		logger.info('Successfully synced models to the database');
 	}
-	catch (error) {
-		logger.error('Failed to sync models to the database', error);
+	catch (err) {
+		logger.error(err, 'Failed to sync models to the database');
 	}
 
 	// Fetch cards data
@@ -31,8 +31,8 @@ export const execute = async client => {
 		// Set cards data to app store
 		appStore.cardsData = cardsData;
 	}
-	catch (error) {
-		logger.error('Failed to fetch cards data', error);
+	catch (err) {
+		logger.error(err, 'Failed to fetch cards data');
 	}
 
 	// Check for alarms every 5 seconds, do not hang the event loop
