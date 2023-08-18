@@ -136,20 +136,21 @@ export const loadPlayerEvents = async (discordPlayer) => {
 	}
 };
 
-export const deleteGuildCommands = async () => {
+export const deleteGuildCommands = async (guildID = null) => {
+	guildID = guildID || process.env.GUILD_ID;
 	const rest = new REST().setToken(process.env.BOT_TOKEN);
 	try {
-		if (!process.env.GUILD_ID) {
-			logger.error('GUILD_ID is not set in .env file');
+		if (!guildID) {
+			logger.error('Guild ID is not defined, please define it in .env file or pass it as an argument');
 			return;
 		}
 
 		await rest.put(
-			Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+			Routes.applicationGuildCommands(process.env.CLIENT_ID, guildID),
 			{ body: [] },
 		);
 
-		logger.info('Successfully deleted guild commands.');
+		logger.info(`Successfully deleted guild ${guildID} commands.`);
 	}
 	catch (err) {
 		logger.error(err, 'Failed to delete guild commands');
