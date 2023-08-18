@@ -64,7 +64,7 @@ export const execute = async (interaction) => {
 					.setDescription(
 						`**${embedOptions.icons.warning} Oops!**\nThere is nothing currently playing. First add some tracks with **\`/music play\`**!`,
 					);
-				return interaction.followUp({ embeds: [errorEmbed], components: [] });
+				return interaction.followUp({ embeds: [errorEmbed], components: [], ephemeral: true });
 			}
 
 			if (queue.currentTrack !== currentTrack) {
@@ -75,7 +75,7 @@ export const execute = async (interaction) => {
 					.setDescription(
 						`**${embedOptions.icons.warning} Oops!**\nThis track has already been skipped or is no longer playing.`,
 					);
-				return interaction.followUp({ embeds: [errorEmbed], components: [] });
+				return interaction.followUp({ embeds: [errorEmbed], components: [], ephemeral: true });
 			}
 
 			// Modify the now playing action row to be disabled
@@ -114,7 +114,7 @@ export const execute = async (interaction) => {
 					}`,
 				);
 
-			return interaction.followUp({ embeds: [skippedTrackEmbed], components: [] });
+			return interaction.followUp({ embeds: [skippedTrackEmbed], components: [], ephemeral: true });
 		}
 	}
 	catch (err) {
@@ -126,7 +126,7 @@ export const execute = async (interaction) => {
 				.setDescription(
 					`**${embedOptions.icons.error} Uh-oh...**\nYou did not interact with the buttons in time.`,
 				);
-			return interaction.followUp({ embeds: [errorEmbed], components: [] });
+			return interaction.followUp({ embeds: [errorEmbed], components: [], ephemeral: true });
 		}
 		else {
 			logger.error(err, 'An error occurred while executing the now playing command');
