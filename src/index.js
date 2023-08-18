@@ -1,7 +1,7 @@
 import vueInit from '@/core/vue.js';
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import { loadCommands, loadEvents, loadPlayerEvents, deleteGlobalCommands, deleteGuildCommands } from '@/utils/loader.js';
+import { loadCommands, loadEvents, loadPlayerEvents } from '@/utils/loader.js';
 import { useAppStore } from '@/store/app.js';
 import { createPlayer } from '@/core/discord_player/create_player.js';
 import { createClient } from '@/core/client/create_client.js';
@@ -33,8 +33,8 @@ export const sequelize = new Sequelize('database', 'user', 'password', {
 		appStore.client = client;
 
 		// Delete global commands
-		await deleteGlobalCommands();
-		await deleteGuildCommands();
+		// await deleteGlobalCommands();
+		// await deleteGuildCommands('658513443166486528');
 
 		// Load commands and evnets
 		await loadCommands(client);
