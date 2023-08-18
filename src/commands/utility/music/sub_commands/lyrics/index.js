@@ -21,6 +21,7 @@ export const data = new SlashCommandSubcommandBuilder()
 			.setRequired(false));
 
 export const execute = async (interaction) => {
+	await interaction.defereditReply({ ephemeral: true });
 
 	const { guild, options } = interaction;
 	const query = options.getString('query');
@@ -54,7 +55,7 @@ export const execute = async (interaction) => {
 					`**${embedOptions.icons.warning} No search results found**\nThere was no search results found for query **${query}**.`,
 				);
 
-			return interaction.reply({ embeds: [embed] });
+			return interaction.editReply({ embeds: [embed] });
 		}
 
 		searchResult = searchResults.tracks[0];
@@ -115,7 +116,7 @@ export const execute = async (interaction) => {
 				`**${embedOptions.icons.warning} No lyrics found**\nThere was no lyrics found for **${geniusSearchQuery}**.`,
 			);
 
-		return interaction.reply({ embeds: [embed] });
+		return interaction.editReply({ embeds: [embed] });
 	}
 
 	// If message length is too long, split into multiple messages
@@ -138,7 +139,7 @@ export const execute = async (interaction) => {
 						`\n\n\`\`\`fix\n${message}\`\`\``,
 					);
 
-				await interaction.reply({ embeds: [embed] });
+				await interaction.editReply({ embeds: [embed] });
 				continue;
 			}
 			else {
@@ -165,7 +166,7 @@ export const execute = async (interaction) => {
 			`\n\n\`\`\`fix\n${lyricsResult.lyrics}\`\`\``,
 		);
 
-	await interaction.reply({ embeds: [embed] });
+	await interaction.editReply({ embeds: [embed] });
 };
 
 export const autocomplete = async (interaction) => {
