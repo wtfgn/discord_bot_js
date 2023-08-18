@@ -1,11 +1,11 @@
 import vueInit from '@/core/vue.js';
-// Require the necessary discord.js classes
-import { Client, GatewayIntentBits, Partials } from 'discord.js';
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import { loadCommands, loadEvents, loadPlayerEvents } from '@/utils/loader.js';
+import { loadCommands, loadEvents, loadPlayerEvents, deleteGlobalCommands, deleteGuildCommands } from '@/utils/loader.js';
 import { useAppStore } from '@/store/app.js';
 import { createPlayer } from '@/core/discord_player/create_player.js';
+import { createClient } from '@/core/client/create_client.js';
+import { logger } from '@/services/logger.js';
 
 // Initialize Vue.js
 vueInit();
@@ -20,45 +20,34 @@ export const sequelize = new Sequelize('database', 'user', 'password', {
 	logging: false,
 });
 
-// Create a new client instance
-const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildModeration,
-		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.GuildVoiceStates,
-		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.DirectMessages,
-	],
-	partials: [
-		Partials.Message,
-		Partials.GuildMember,
-		Partials.User,
-		Partials.Channel,
-		Partials.Reaction,
-	],
-});
-createPlayer(client).then(player => {
-	// Add event listeners to discord player
-	loadPlayerEvents(player);
-});
-// Initialize app store
-const appStore = useAppStore();
-
-appStore.client = client;
-
-// Log in to Discord with your client's token
-client.login(process.env.BOT_TOKEN);
-
 (async () => {
-	// Delete all commands
-	// await deleteGuildCommands();
-	// await deleteGlobalCommands();
+	try {
+		// Create a new client instance
+		const client = await createClient();
+		// Create a new player instance
+		const player = await createPlayer(client);
+		// Create app store
+		const appStore = useAppStore();
 
-	// Load commands and events
-	await loadCommands();
-	await loadEvents();
+		// Add client to app store
+		appStore.client = client;
+
+		// Delete global commands
+		await deleteGlobalCommands();
+		await deleteGuildCommands();
+
+		// Load commands and evnets
+		await loadCommands(client);
+		await loadEvents(client);
+
+		// Load player events
+		await loadPlayerEvents(player);
+
+		// Login to Discord with your client's token
+		await client.login(process.env.BOT_TOKEN);
+	}
+	catch (err) {
+		logger.error(err, 'Failed to initialize application');
+		throw err;
+	}
 })();
