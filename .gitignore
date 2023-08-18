@@ -5,3 +5,4 @@ yarn.lock
 *.sqlite
 yarn-error.log
 logs
+start.bat
