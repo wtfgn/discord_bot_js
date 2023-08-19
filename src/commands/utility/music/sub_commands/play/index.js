@@ -154,7 +154,7 @@ export const execute = async (interaction) => {
 		}
 
 		// If the error is not handled above, log it to the console
-		logger.error('Error while playing track: ', err);
+		logger.error(err, 'Error while playing track: ');
 		// Then send a generic error message to the user
 		await interaction.followUp({ content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``, ephemeral: true });
 	}
