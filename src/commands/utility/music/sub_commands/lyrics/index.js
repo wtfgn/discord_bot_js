@@ -21,7 +21,7 @@ export const data = new SlashCommandSubcommandBuilder()
 			.setRequired(false));
 
 export const execute = async (interaction) => {
-	await interaction.defereditReply({ ephemeral: true });
+	await interaction.deferReply({ ephemeral: true });
 
 	const { guild, options } = interaction;
 	const query = options.getString('query');
