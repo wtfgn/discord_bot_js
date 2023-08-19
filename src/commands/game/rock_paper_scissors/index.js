@@ -1,4 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { embedOptions } from '#/config/config.json';
+import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandBuilder()
 	.setName('rock_paper_scissors')
@@ -20,12 +22,18 @@ export const execute = async (interaction) => {
 	const { options } = interaction;
 	const rounds = options.getInteger('rounds') ?? 1;
 	const opponent = options.getUser('opponent');
+	const warningEmbed = new EmbedBuilder();
+	let currentRound = 1;
 
 	if (opponent.id === interaction.user.id) {
-		return interaction.reply({
-			content: 'You cannot play against yourself!',
-			ephemeral: true,
-		});
+		warningEmbed
+			.setColor(embedOptions.colors.error)
+			.setDescription(
+				`**${embedOptions.icons.error} You can't play against yourself!**`,
+			);
+
+		logger.debug(`User <${interaction.user.username}> tried to play rock paper scissors against themselves`);
+		return interaction.reply({ embeds: [warningEmbed], ephemeral: true });
 	}
 
 	const emojis = {
@@ -36,7 +44,9 @@ export const execute = async (interaction) => {
 
 	const embed = new EmbedBuilder()
 		.setTitle('Rock Paper Scissors')
-		.setDescription(`You are playing against ${opponent.username}!`);
+		.setDescription(`You are playing against ${opponent.username}!`)
+		.setFooter({ text: `Round ${currentRound}/${rounds}` })
+		.setColor(embedOptions.colors.default);
 
 	const row = new ActionRowBuilder()
 		.addComponents(
@@ -60,7 +70,34 @@ export const execute = async (interaction) => {
 		fetchReply: true,
 	});
 
-	const filter = (i) => i.user.id === interaction.user.id || i.user.id === opponent.id;
+	const filter = (i) => {
+		if (i.user.id !== interaction.user.id && i.user.id !== opponent.id) {
+			warningEmbed
+				.setColor(embedOptions.colors.error)
+				.setDescription(
+					`**${embedOptions.icons.warning} You are not allowed to interact with this button!**`,
+				);
+
+			logger.debug(`User <${i.user.username}> tried to interact with rock paper scissors button but they are not allowed`);
+			i.reply({ embeds: [warningEmbed], ephemeral: true });
+			return false;
+		}
+
+		if ((i.user.id === interaction.user.id && playerMove) ||
+			(i.user.id === opponent.id && opponentMove)) {
+			warningEmbed
+				.setColor(embedOptions.colors.error)
+				.setDescription(
+					`**${embedOptions.icons.warning} You have already selected a move!**`,
+				);
+
+			logger.debug(`User <${i.user.username}> tried to interact with rock paper scissors button but they have already selected a move`);
+			i.reply({ embeds: [warningEmbed], ephemeral: true });
+			return false;
+		}
+
+		return true;
+	};
 
 	const collector = message.createMessageComponentCollector({ filter, time: 60000 });
 
@@ -75,6 +112,14 @@ export const execute = async (interaction) => {
 	// If both players have selected a move, determine the winner
 	collector.on('collect', async (componentInteraction) => {
 		const { user } = componentInteraction;
+
+		// Reset the timer
+		collector.resetTimer({ time: 60000 });
+
+		if (currentRound > 1 && !playerMove && !opponentMove) {
+			embed.spliceFields(0, 25);
+			message.edit({ embeds: [embed] });
+		}
 
 		if (user.id === interaction.user.id) {
 			embed.addFields({ name: `${componentInteraction.user.username}'s move`, value: `||${emojis[componentInteraction.customId]}||` });
@@ -104,9 +149,15 @@ export const execute = async (interaction) => {
 				opponentWins++;
 			}
 
+			currentRound = Math.max(playerWins, opponentWins) + 1;
+			// Reset the moves
 			playerMove = null;
 			opponentMove = null;
 
+			// Update the footer
+			embed.setFooter({ text: `Round ${currentRound > rounds ? currentRound - 1 : currentRound}/${rounds}\n${interaction.user.username}: ${playerWins}\n${opponent.username}: ${opponentWins}` });
+
+			// Update the embed
 			await message.edit({ embeds: [embed] });
 
 
@@ -118,11 +169,20 @@ export const execute = async (interaction) => {
 		}
 	});
 
-	collector.on('end', async () => {
-		embed.addFields({
-			name: 'Final Result',
-			value: `${interaction.user.username}: ${playerWins}\n${opponent.username}: ${opponentWins}`,
-		});
+	collector.on('end', async (collected, reason) => {
+		if (reason === 'time') {
+			logger.debug(`User <${interaction.user.username}> finished playing rock paper scissors against <${opponent.username}> because the game timed out`);
+			embed.addFields({ name: 'Result', value: 'The game has ended because no one selected a move in 60 seconds!' });
+		}
+
+		embed
+			.addFields({
+				name: 'Final Result',
+				value: `${interaction.user.username}: ${playerWins}\n${opponent.username}: ${opponentWins}`,
+			})
+			.setFooter({ text: 'The game has ended!' });
+
+		logger.debug(`User <${interaction.user.username}> finished playing rock paper scissors against <${opponent.username}>`);
 		await message.edit({ embeds: [embed], components: [] });
 	});
 };
