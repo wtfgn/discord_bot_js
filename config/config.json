@@ -33,7 +33,8 @@
 			"warning": "#F0B232",
 			"error": "#F23F43",
 			"info": "#5865F2",
-			"note": "#80848E"
+			"note": "#80848E",
+			"default": "#2F3136"
 		},
 		"icons": {
 			"logo": "🤖",
@@ -80,7 +81,7 @@
 		}
 	},
 	"loggerOptions": {
-		"minimumLogLevel": "debug",
+		"minimumLogLevel": "info",
 		"minimumLogLevelConsole": "debug"
 	}
 }
