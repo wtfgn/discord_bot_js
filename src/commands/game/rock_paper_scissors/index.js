@@ -27,9 +27,9 @@ export const execute = async (interaction) => {
 
 	if (opponent.id === interaction.user.id) {
 		warningEmbed
-			.setColor(embedOptions.colors.error)
+			.setColor(embedOptions.colors.warning)
 			.setDescription(
-				`**${embedOptions.icons.error} You can't play against yourself!**`,
+				`**${embedOptions.icons.warning} You can't play against yourself!**`,
 			);
 
 		logger.debug(`User <${interaction.user.username}> tried to play rock paper scissors against themselves`);
@@ -73,7 +73,7 @@ export const execute = async (interaction) => {
 	const filter = (i) => {
 		if (i.user.id !== interaction.user.id && i.user.id !== opponent.id) {
 			warningEmbed
-				.setColor(embedOptions.colors.error)
+				.setColor(embedOptions.colors.warning)
 				.setDescription(
 					`**${embedOptions.icons.warning} You are not allowed to interact with this button!**`,
 				);
@@ -86,7 +86,7 @@ export const execute = async (interaction) => {
 		if ((i.user.id === interaction.user.id && playerMove) ||
 			(i.user.id === opponent.id && opponentMove)) {
 			warningEmbed
-				.setColor(embedOptions.colors.error)
+				.setColor(embedOptions.colors.warning)
 				.setDescription(
 					`**${embedOptions.icons.warning} You have already selected a move!**`,
 				);
