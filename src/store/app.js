@@ -6,6 +6,7 @@ export const useAppStore = defineStore('app', {
 		client: null,
 		commandsActionMap: null,
 		cooldowns: new Collection(),
+		timers: new Collection(),
 
 		// Shadowverse's card data
 		cardsData: null,
