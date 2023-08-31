@@ -1,5 +1,14 @@
 # discord_bot_js
-A discord bot specialised for my server
+A discord bot specialised for my server. This bot has the following features
+- Games like minesweeper and rock-scissors-paper
+- Moderation commands: prune
+- Alarm function
+- Play songs as a queue
+- Display and auto update server member count
+...
+
+*The details can be viewed when you type the commands.
+*
 
 ## Installation
 
