@@ -19,6 +19,8 @@ export const execute = async (interaction) => {
 	const memberCount = interaction.guild.memberCount;
 	const channel = options.getChannel('channel');
 
+	logger.debug(`User <${interaction.user.username}> is trying to set display channel to <#${channel.id}>`);
+
 	// Get guild from DB, if not found, create one
 	const [ guild ] = await memberCountGuilds.findOrCreate({
 		where: {
@@ -42,6 +44,8 @@ export const execute = async (interaction) => {
 		await oldChannel.setName(oldChannelName);
 		// Set channel permissions
 		await oldChannel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
+
+		logger.debug(`User <${interaction.user.username}> switched display channel from <#${oldChannel.id}> to <#${channel.id}>`);
 	}
 
 	// Update channel
@@ -61,4 +65,5 @@ export const execute = async (interaction) => {
 
 	// Reply to interaction
 	await interaction.editReply({ content: `<#${channel.id}> will now display the number of guild members`, ephemeral: true });
+	logger.debug(`User <${interaction.user.username}> has successfully set display channel to <#${channel.id}>`);
 };

@@ -17,6 +17,7 @@ export const execute = async (interaction) => {
 	const { options } = interaction;
 	const channel = options.getChannel('channel');
 
+	logger.debug(`User <${interaction.user.username}> is trying to remove display channel <#${channel.id}>`);
 	await interaction.reply({ content: 'Removing display channel...\n(If this message does not disappear, please wait 10 mins and try again)', ephemeral: true });
 
 	// Get guild from DB
@@ -54,5 +55,6 @@ export const execute = async (interaction) => {
 	await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { Connect: true });
 
 	// Reply to interaction
+	logger.debug(`User <${interaction.user.username}> has successfully removed display channel <#${channel.id}>`);
 	await interaction.editReply({ content: 'Channel removed', ephemeral: true });
 };
