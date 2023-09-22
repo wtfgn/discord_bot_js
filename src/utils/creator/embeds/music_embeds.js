@@ -31,12 +31,12 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 		currentTrack.metadata.bridge.views !== undefined
 	) {
 		plays = currentTrack.metadata.bridge.views;
-	}
-	else if (plays === 0) {
+	} else if (plays === 0) {
 		plays = 'Unavailable';
 	}
 
-	const source = sourceStringsFormatted.get(currentTrack.raw.source) ?? 'Unavailable';
+	const source =
+		sourceStringsFormatted.get(currentTrack.raw.source) ?? 'Unavailable';
 	const queueLength = queue.tracks.data.length;
 	const timestamp = queue.node.getTimestamp();
 	let bar = `**\`${timestamp.current.label}\`** ${queue.node.createProgressBar({
@@ -63,7 +63,9 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 
 	return new EmbedBuilder()
 		.setAuthor({
-			name: `Channel: ${queue.channel.name} (${queue.channel.bitrate / 1000}kbps)`,
+			name: `Channel: ${queue.channel.name} (${
+				queue.channel.bitrate / 1000
+			}kbps)`,
 			iconURL: interaction.guild.iconURL(),
 		})
 		.setColor(embedOptions.colors.info)
@@ -71,16 +73,19 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 		.setDescription(
 			(queue.node.isPaused()
 				? '**Currently Paused**\n'
-				: `**${embedOptions.icons.audioPlaying
-				} Now Playing**\n`) +
-			`**[${currentTrack.title}](${currentTrack.url})**` +
-			`\nRequested by: <@${currentTrack.requestedBy.id}>` +
-			`\n ${bar}\n\n` +
-			`${queue.repeatMode === 0
-				? ''
-				: `**${queue.repeatMode === 3 ? embedOptions.icons.autoplay : embedOptions.icons.loop
-				} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/music loop\`**.`
-			}`,
+				: `**${embedOptions.icons.audioPlaying} Now Playing**\n`) +
+				`**[${currentTrack.title}](${currentTrack.url})**` +
+				`\nRequested by: <@${currentTrack.requestedBy.id}>` +
+				`\n ${bar}\n\n` +
+				`${
+					queue.repeatMode === 0
+						? ''
+						: `**${
+								queue.repeatMode === 3
+									? embedOptions.icons.autoplay
+									: embedOptions.icons.loop
+						  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/music loop\`**.`
+				}`,
 		)
 		.addFields({
 			name: '**Author**',
@@ -94,7 +99,9 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 		})
 		.addFields({
 			name: '**Track source**',
-			value: `**${sourceIcons.get(currentTrack.raw.source)} [${source}](${currentTrack.url})**`,
+			value: `**${sourceIcons.get(currentTrack.raw.source)} [${source}](${
+				currentTrack.url
+			})**`,
 			inline: true,
 		})
 		.setFooter({

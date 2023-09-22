@@ -1,5 +1,15 @@
-import { SlashCommandSubcommandBuilder, EmbedBuilder, inlineCode } from 'discord.js';
-import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import {
+	SlashCommandSubcommandBuilder,
+	EmbedBuilder,
+	inlineCode,
+} from 'discord.js';
+import {
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+} from 'discord.js';
 import cardConfigData from '#/config/sv_config.json';
 import { useAppStore } from '@/store/app.js';
 import { logger } from '@/services/logger.js';
@@ -11,40 +21,59 @@ export const data = new SlashCommandSubcommandBuilder()
 		option
 			.setName('cardpack')
 			.setDescription('The card pack to search from')
-			.setAutocomplete(true))
+			.setAutocomplete(true),
+	)
 	.addStringOption((option) =>
 		option
 			.setName('craft')
 			.setDescription('The craft to search from')
-			.addChoices(...cardConfigData.crafts.map((craft) => ({ name: craft, value: craft }))))
+			.addChoices(
+				...cardConfigData.crafts.map((craft) => ({
+					name: craft,
+					value: craft,
+				})),
+			),
+	)
 	.addStringOption((option) =>
 		option
 			.setName('rarity')
 			.setDescription('The rarity to search from')
-			.addChoices(...cardConfigData.rarities.map((rarity) => ({ name: rarity, value: rarity }))))
+			.addChoices(
+				...cardConfigData.rarities.map((rarity) => ({
+					name: rarity,
+					value: rarity,
+				})),
+			),
+	)
 	.addStringOption((option) =>
 		option
 			.setName('type')
 			.setDescription('The type to search from')
-			.addChoices(...cardConfigData.types.map((type) => ({ name: type, value: type }))))
+			.addChoices(
+				...cardConfigData.types.map((type) => ({ name: type, value: type })),
+			),
+	)
 	.addIntegerOption((option) =>
 		option
 			.setName('cost')
 			.setDescription('The cost to search from')
 			.setMaxValue(100)
-			.setMinValue(0))
+			.setMinValue(0),
+	)
 	.addIntegerOption((option) =>
 		option
 			.setName('attack')
 			.setDescription('The attack to search from')
 			.setMaxValue(100)
-			.setMinValue(0))
+			.setMinValue(0),
+	)
 	.addIntegerOption((option) =>
 		option
 			.setName('defense')
 			.setDescription('The defense to search from')
 			.setMaxValue(100)
-			.setMinValue(0));
+			.setMinValue(0),
+	);
 
 export const execute = async (interaction) => {
 	const appStore = useAppStore();
@@ -58,7 +87,6 @@ export const execute = async (interaction) => {
 	const cost = interaction.options.getInteger('cost');
 	const attack = interaction.options.getInteger('attack');
 	const defense = interaction.options.getInteger('defense');
-
 
 	// Filter cards
 	const filteredCards = Object.values(cardsData).filter((card) => {
@@ -88,7 +116,9 @@ export const execute = async (interaction) => {
 
 	// Check if there are any cards
 	if (filteredCards.length === 0) {
-		logger.debug(`User <${interaction.user.username}> tried to search for a card but no cards were found`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to search for a card but no cards were found`,
+		);
 		return interaction.reply({
 			content: 'No cards found!',
 			ephemeral: true,
@@ -103,13 +133,12 @@ export const execute = async (interaction) => {
 	const cardEmbed = createCardEmbed(filteredCards[0], currentPage, totalPages);
 
 	// Create action row
-	const selectMenuRow = new ActionRowBuilder()
-		.addComponents(
-			new StringSelectMenuBuilder()
-				.setCustomId('cardSelectMenu')
-				.setPlaceholder('Select a card')
-				.setOptions(createSelectMenuOptions(filteredCards.slice(0, cardPerPage))),
-		);
+	const selectMenuRow = new ActionRowBuilder().addComponents(
+		new StringSelectMenuBuilder()
+			.setCustomId('cardSelectMenu')
+			.setPlaceholder('Select a card')
+			.setOptions(createSelectMenuOptions(filteredCards.slice(0, cardPerPage))),
+	);
 
 	const buttonsRow = new ActionRowBuilder()
 		.addComponents(
@@ -139,7 +168,8 @@ export const execute = async (interaction) => {
 
 	// Create collector
 	const collector = message.createMessageComponentCollector({
-		filter: (componentInteraction) => componentInteraction.user.id === interaction.user.id,
+		filter: (componentInteraction) =>
+			componentInteraction.user.id === interaction.user.id,
 		time: 60000,
 	});
 
@@ -151,10 +181,16 @@ export const execute = async (interaction) => {
 		// Handle the selection menu
 		if (componentInteraction.isStringSelectMenu()) {
 			// Get the selected card
-			const selectedCard = filteredCards.find((card) => card.id_ === parseInt(componentInteraction.values[0]));
+			const selectedCard = filteredCards.find(
+				(card) => card.id_ === parseInt(componentInteraction.values[0]),
+			);
 
 			// Create embed
-			const selectedCardEmbed = createCardEmbed(selectedCard, currentPage, totalPages);
+			const selectedCardEmbed = createCardEmbed(
+				selectedCard,
+				currentPage,
+				totalPages,
+			);
 
 			// Edit message
 			await componentInteraction.update({
@@ -168,7 +204,10 @@ export const execute = async (interaction) => {
 			const previousPage = --currentPage;
 
 			// Get the previous cards
-			const previousCards = filteredCards.slice(previousPage * cardPerPage, (previousPage + 1) * cardPerPage);
+			const previousCards = filteredCards.slice(
+				previousPage * cardPerPage,
+				(previousPage + 1) * cardPerPage,
+			);
 
 			// Create new options
 			const newOptions = createSelectMenuOptions(previousCards);
@@ -184,7 +223,11 @@ export const execute = async (interaction) => {
 			buttonsRow.components[1].setDisabled(false);
 
 			// Create embed
-			const previousCardEmbed = createCardEmbed(previousCards[0], previousPage, totalPages);
+			const previousCardEmbed = createCardEmbed(
+				previousCards[0],
+				previousPage,
+				totalPages,
+			);
 
 			// Edit message
 			await componentInteraction.update({
@@ -199,7 +242,10 @@ export const execute = async (interaction) => {
 			const nextPage = ++currentPage;
 
 			// Get the next cards
-			const nextCards = filteredCards.slice(nextPage * cardPerPage, (nextPage + 1) * cardPerPage);
+			const nextCards = filteredCards.slice(
+				nextPage * cardPerPage,
+				(nextPage + 1) * cardPerPage,
+			);
 
 			// Create new options
 			const newOptions = createSelectMenuOptions(nextCards);
@@ -228,7 +274,9 @@ export const execute = async (interaction) => {
 	// Handle the end of the collector
 	collector.on('end', async (collected, reason) => {
 		if (reason === 'time') {
-			logger.debug(`User <${interaction.user.username}> timed out while searching for a card`);
+			logger.debug(
+				`User <${interaction.user.username}> timed out while searching for a card`,
+			);
 			await interaction.editReply({
 				content: 'The card selection menu has timed out.',
 				components: [],
@@ -241,7 +289,11 @@ export const autocomplete = async (interaction) => {
 	const focusedOption = interaction.options.getFocused(true);
 	const choices = cardConfigData.cardPacks;
 	const optionPerPage = 25;
-	const filteredChoices = choices.filter((choice) => choice.toLowerCase().includes(focusedOption.value.toLowerCase())).slice(0, optionPerPage);
+	const filteredChoices = choices
+		.filter((choice) =>
+			choice.toLowerCase().includes(focusedOption.value.toLowerCase()),
+		)
+		.slice(0, optionPerPage);
 	const finalChoices = filteredChoices.map((choice) => ({
 		name: choice,
 		value: choice,
@@ -255,11 +307,11 @@ const createCardEmbed = (card, currentPage, totalPages) => {
 		.setDescription(
 			`${card.baseFlair_ || 'None'}
 
-			${card.evoFlair_ || 'None'}`)
+			${card.evoFlair_ || 'None'}`,
+		)
 		.addFields({
 			name: '**Card Info**',
-			value:
-			`**Expansion:**
+			value: `**Expansion:**
 			${card.expansion_}
 
 			**Class:**
@@ -277,8 +329,9 @@ const createCardEmbed = (card, currentPage, totalPages) => {
 		})
 		.addFields({
 			name: '**Stats**',
-			value:
-			`**Attack:** ${inlineCode(card.baseAtk_)} -> ${inlineCode(card.evoAtk_)}
+			value: `**Attack:** ${inlineCode(card.baseAtk_)} -> ${inlineCode(
+				card.evoAtk_,
+			)}
 			
 			**Defense:** ${inlineCode(card.baseDef_)} -> ${inlineCode(card.evoDef_)}`,
 			inline: true,
@@ -296,7 +349,9 @@ const createCardEmbed = (card, currentPage, totalPages) => {
 		.setColor(cardConfigData.cardRarityColors[card.rarity_])
 		.setThumbnail('https://svgdb.me/assets/emblems/em_1233410200_m.png')
 		.setImage(`https://svgdb.me/assets/fullart/${card.id_}0.png`)
-		.setFooter({ text: `Card ID: ${card.id_} | Page ${currentPage + 1} of ${totalPages}` });
+		.setFooter({
+			text: `Card ID: ${card.id_} | Page ${currentPage + 1} of ${totalPages}`,
+		});
 };
 
 const createSelectMenuOptions = (cards) => {
@@ -304,5 +359,8 @@ const createSelectMenuOptions = (cards) => {
 		new StringSelectMenuOptionBuilder()
 			.setLabel(`${card.name_}`)
 			.setValue(`${card.id_}`)
-			.setDescription(`${card.expansion_} ${card.craft_} ${card.rarity_} ${card.type_} ${card.pp_}pp ${card.baseAtk_}/${card.baseDef_}`));
+			.setDescription(
+				`${card.expansion_} ${card.craft_} ${card.rarity_} ${card.type_} ${card.pp_}pp ${card.baseAtk_}/${card.baseDef_}`,
+			),
+	);
 };

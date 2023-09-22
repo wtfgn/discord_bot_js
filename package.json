@@ -2,7 +2,9 @@
 	"type": "module",
 	"main": "src/index.js",
 	"scripts": {
-		"dev": "vite-node src/index.js"
+		"dev": "vite-node src/index.js",
+		"lint": "eslint . --ext .js,",
+		"lint:fix": "eslint . --ext .js, --fix"
 	},
 	"dependencies": {
 		"@discord-player/extractor": "4.4.4",
@@ -26,6 +28,7 @@
 		"vue": "^3.3.4"
 	},
 	"devDependencies": {
-		"eslint": "^8.49.0"
+		"eslint": "^8.49.0",
+		"prettier": "^3.0.3"
 	}
 }

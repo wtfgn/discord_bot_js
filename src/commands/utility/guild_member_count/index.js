@@ -1,4 +1,8 @@
-import { Collection, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import {
+	Collection,
+	SlashCommandBuilder,
+	PermissionFlagsBits,
+} from 'discord.js';
 import { subCommandExecutor } from '@/utils/executor.js';
 
 export const data = new SlashCommandBuilder()

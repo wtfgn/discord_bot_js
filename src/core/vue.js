@@ -11,10 +11,8 @@ export default () => {
 		vue.use(pinia);
 
 		logger.info('Successfully initialized Vue.js');
-	}
-	catch (err) {
+	} catch (err) {
 		logger.error(err, 'Failed to initialize Vue.js');
 		throw err;
 	}
-
 };

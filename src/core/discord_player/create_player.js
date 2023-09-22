@@ -2,7 +2,6 @@ import { Player } from 'discord-player';
 import { logger } from '@/services/logger.js';
 
 export const createPlayer = async (client) => {
-
 	try {
 		// Initialize Discord player
 		const discordPlayer = Player.singleton(client, {
@@ -22,8 +21,7 @@ export const createPlayer = async (client) => {
 
 		logger.info('Successfully created Discord player');
 		return discordPlayer;
-	}
-	catch (err) {
+	} catch (err) {
 		logger.error('Failed to create Discord player', err);
 	}
 };

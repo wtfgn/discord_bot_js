@@ -17,7 +17,9 @@ export const execute = async (interaction) => {
 
 	// Check if the queue exists
 	if (!queue) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without a queue`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command without a queue`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)

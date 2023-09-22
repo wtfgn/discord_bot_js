@@ -1,36 +1,36 @@
 {
-    "cardPacks": [
-        "Heroes of Rivenbrandt",
-        "Academy of Ages",
-        "Eightfold Abyss Azvaldt",
-        "Celestial Dragonblade",
-        "Roar of the Godwyrm",
-        "Edge of Paradise",
-        "Omen of Storms",
-        "Dawn of Calamity",
-        "Renascent Chronicles",
-        "Darkness Over Vellsar",
-        "Eternal Awakening",
-        "Storm Over Rivayle",
-        "Fortunes Hand",
-        "World Uprooted",
-        "Ultimate Colosseum",
-        "Verdant Conflict",
-        "Rebirth of Glory",
-        "Steel Rebellion",
-        "Altersphere",
-        "Omen of the Ten",
-        "Brigade of the Sky",
-        "Dawnbreak, Nightedge",
-        "Chronogenesis",
-        "Starforged Legends",
-        "Wonderland Dreams",
-        "Tempest of the Gods",
-        "Rise of Bahamut",
-        "Darkness Evolved",
-        "Classic",
-        "Basic",
-        "Token"
+	"cardPacks": [
+		"Heroes of Rivenbrandt",
+		"Academy of Ages",
+		"Eightfold Abyss Azvaldt",
+		"Celestial Dragonblade",
+		"Roar of the Godwyrm",
+		"Edge of Paradise",
+		"Omen of Storms",
+		"Dawn of Calamity",
+		"Renascent Chronicles",
+		"Darkness Over Vellsar",
+		"Eternal Awakening",
+		"Storm Over Rivayle",
+		"Fortunes Hand",
+		"World Uprooted",
+		"Ultimate Colosseum",
+		"Verdant Conflict",
+		"Rebirth of Glory",
+		"Steel Rebellion",
+		"Altersphere",
+		"Omen of the Ten",
+		"Brigade of the Sky",
+		"Dawnbreak, Nightedge",
+		"Chronogenesis",
+		"Starforged Legends",
+		"Wonderland Dreams",
+		"Tempest of the Gods",
+		"Rise of Bahamut",
+		"Darkness Evolved",
+		"Classic",
+		"Basic",
+		"Token"
 	],
 	"crafts": [
 		"Forestcraft",
@@ -43,25 +43,13 @@
 		"Portalcraft",
 		"Neutral"
 	],
-	"rarities": [
-		"Bronze",
-		"Silver",
-		"Gold",
-		"Legendary"
-	],
-	"formats": [
-		"Rotation",
-		"Unlimited"
-	],
-	"types": [
-		"Follower",
-		"Spell",
-		"Amulet"
-	],
-    "cardRarityColors": {
-        "Bronze": "#a67a44",
-        "Silver": "#a0a0a0",
-        "Gold": "#d4af37",
-        "Legendary": "#9370db"
-    }
+	"rarities": ["Bronze", "Silver", "Gold", "Legendary"],
+	"formats": ["Rotation", "Unlimited"],
+	"types": ["Follower", "Spell", "Amulet"],
+	"cardRarityColors": {
+		"Bronze": "#a67a44",
+		"Silver": "#a0a0a0",
+		"Gold": "#d4af37",
+		"Legendary": "#9370db"
+	}
 }

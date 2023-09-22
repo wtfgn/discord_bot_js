@@ -7,7 +7,8 @@ export const data = new SlashCommandSubcommandBuilder()
 export const execute = async (interaction) => {
 	const { guild } = interaction;
 
-	if (!guild.available) return interaction.reply('This server is not available.');
+	if (!guild.available)
+		return interaction.reply('This server is not available.');
 
 	const embed = {
 		color: 0x53bed4,

@@ -3,10 +3,9 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('user')
 	.setDescription('Info about a user')
-	.addUserOption(option =>
-		option
-			.setName('target')
-			.setDescription('The user'));
+	.addUserOption((option) =>
+		option.setName('target').setDescription('The user'),
+	);
 
 export const execute = async (interaction) => {
 	const { options } = interaction;

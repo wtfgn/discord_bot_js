@@ -8,12 +8,13 @@ import { logger } from '@/services/logger.js';
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('remove')
 	.setDescription('Remove a track from the queue')
-	.addIntegerOption(option =>
+	.addIntegerOption((option) =>
 		option
 			.setName('track_number')
 			.setDescription('Provide the track number to remove')
 			.setMinValue(1)
-			.setRequired(true));
+			.setRequired(true),
+	);
 
 export const execute = async (interaction) => {
 	// Defer the reply to the interaction
@@ -31,7 +32,9 @@ export const execute = async (interaction) => {
 
 	// Check if the track number is valid
 	if (removeTrackNumber > queue.tracks.data.length) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid track number`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid track number`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
@@ -43,9 +46,14 @@ export const execute = async (interaction) => {
 
 	// Remove the track
 	const removedTrack = queue.node.remove(removeTrackNumber - 1);
-	const durationFormat = removedTrack.raw.duration === 0 || removedTrack.duration === '0:00' ? '' : `\`${removedTrack.duration}\``;
+	const durationFormat =
+		removedTrack.raw.duration === 0 || removedTrack.duration === '0:00'
+			? ''
+			: `\`${removedTrack.duration}\``;
 
-	logger.debug(`User <${interaction.user.username}> removed track <${removedTrack.title}> from the queue`);
+	logger.debug(
+		`User <${interaction.user.username}> removed track <${removedTrack.title}> from the queue`,
+	);
 
 	const embed = new EmbedBuilder()
 		.setAuthor({

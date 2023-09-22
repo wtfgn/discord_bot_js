@@ -4,16 +4,16 @@ import wait from 'node:timers/promises';
 export const data = new SlashCommandBuilder()
 	.setName('prune')
 	.setDescription('Prune messages from a channel')
-	.addIntegerOption(option =>
+	.addIntegerOption((option) =>
 		option
 			.setName('amount')
 			.setDescription('The amount of messages to prune')
 			.setMaxValue(100)
-			.setMinValue(1))
-	.addUserOption(option =>
-		option
-			.setName('target')
-			.setDescription('The user to prune messages from'));
+			.setMinValue(1),
+	)
+	.addUserOption((option) =>
+		option.setName('target').setDescription('The user to prune messages from'),
+	);
 
 export const execute = async (interaction) => {
 	const { options, channel } = interaction;
@@ -23,7 +23,9 @@ export const execute = async (interaction) => {
 
 	if (target) {
 		const messages = await channel.messages.fetch({ limit: amount });
-		const messagesToDelete = messages.filter(message => message.author.id === target.id);
+		const messagesToDelete = messages.filter(
+			(message) => message.author.id === target.id,
+		);
 		if (messagesToDelete.size === 0) {
 			return interaction.reply({
 				content: 'No messages found from that user!',
@@ -31,13 +33,14 @@ export const execute = async (interaction) => {
 			});
 		}
 		deletedMessages = await channel.bulkDelete(messagesToDelete, true);
-	}
-	else {
+	} else {
 		deletedMessages = await channel.bulkDelete(amount, true);
 	}
 
 	await interaction.reply({
-		content: `Pruned ${inlineCode(deletedMessages.size)} message(s)${target ? ` from ${target.tag}` : ''}`,
+		content: `Pruned ${inlineCode(deletedMessages.size)} message(s)${
+			target ? ` from ${target.tag}` : ''
+		}`,
 		ephemeral: true,
 	});
 	await wait.setTimeout(3000);

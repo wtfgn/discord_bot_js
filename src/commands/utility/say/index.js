@@ -4,10 +4,12 @@ import wait from 'node:timers/promises';
 export const data = new SlashCommandBuilder()
 	.setName('say')
 	.setDescription('Replies with your input!')
-	.addStringOption(option =>
-		option.setName('input')
+	.addStringOption((option) =>
+		option
+			.setName('input')
 			.setDescription('The input to echo back')
-			.setRequired(true));
+			.setRequired(true),
+	);
 
 export const execute = async (interaction) => {
 	const { channel } = interaction;

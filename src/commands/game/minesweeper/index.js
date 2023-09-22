@@ -3,30 +3,34 @@ import { SlashCommandBuilder } from 'discord.js';
 export const data = new SlashCommandBuilder()
 	.setName('minesweeper')
 	.setDescription('Play a game of minesweeper!')
-	.addIntegerOption(option =>
+	.addIntegerOption((option) =>
 		option
 			.setName('width')
 			.setDescription('The width of the minesweeper board')
 			.setMaxValue(10)
-			.setMinValue(1))
-	.addIntegerOption(option =>
+			.setMinValue(1),
+	)
+	.addIntegerOption((option) =>
 		option
 			.setName('height')
 			.setDescription('The height of the minesweeper board')
 			.setMaxValue(10)
-			.setMinValue(1))
-	.addIntegerOption(option =>
+			.setMinValue(1),
+	)
+	.addIntegerOption((option) =>
 		option
 			.setName('mines')
 			.setDescription('The amount of mines to place on the board')
 			.setMaxValue(100)
-			.setMinValue(1));
+			.setMinValue(1),
+	);
 
 export const execute = async (interaction) => {
 	const { options, channel } = interaction;
 	const width = options.getInteger('width') ?? 10;
 	const height = options.getInteger('height') ?? 10;
-	const mines = options.getInteger('mines') ?? Math.floor(width * height / 10);
+	const mines =
+		options.getInteger('mines') ?? Math.floor((width * height) / 10);
 
 	// Create the board
 	const board = createBoard(width, height, mines);
@@ -68,7 +72,6 @@ const createBoard = (width, height, mines) => {
 	// Place the numbers
 	for (let i = 0; i < height; i++) {
 		for (let j = 0; j < width; j++) {
-
 			// If the square is a mine, skip it
 			if (board[i][j] === '||:bomb:||') {
 				continue;
@@ -78,7 +81,6 @@ const createBoard = (width, height, mines) => {
 			let minesAround = 0;
 			for (let k = -1; k <= 1; k++) {
 				for (let l = -1; l <= 1; l++) {
-
 					// If the square is out of bounds, skip it
 					// i + k < 0: above the board
 					// i + k >= height: below the board

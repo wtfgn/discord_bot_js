@@ -8,7 +8,7 @@ import { logger } from '@/services/logger.js';
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('loop')
 	.setDescription('Toggle looping a track, the whole queue or autoplay.')
-	.addStringOption(option =>
+	.addStringOption((option) =>
 		option
 			.setName('mode')
 			.setDescription('Provide the mode to loop')
@@ -18,7 +18,8 @@ export const data = new SlashCommandSubcommandBuilder()
 				{ name: 'Queue', value: '2' },
 				{ name: 'Autoplay', value: '3' },
 				{ name: 'Disable', value: '0' },
-			));
+			),
+	);
 
 export const execute = async (interaction) => {
 	await interaction.deferReply({ ephemeral: true });
@@ -50,7 +51,9 @@ export const execute = async (interaction) => {
 			.setColor(embedOptions.colors.info)
 			.setDescription(
 				`**${
-					currentMode === 3 ? embedOptions.icons.autoplay : embedOptions.icons.loop
+					currentMode === 3
+						? embedOptions.icons.autoplay
+						: embedOptions.icons.loop
 				} Current loop mode**\nThe looping mode is currently set to \`${currentModeUserString}\`.`,
 			);
 		return interaction.editReply({ embeds: [embed] });
@@ -58,7 +61,9 @@ export const execute = async (interaction) => {
 
 	// If the mode is same as current mode, return
 	if (mode === currentMode) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
@@ -73,7 +78,9 @@ export const execute = async (interaction) => {
 
 	// If the mode is not set to the provided mode, return
 	if (!queue.repeatMode === mode) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with the same loop mode`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.error)
@@ -112,4 +119,3 @@ export const execute = async (interaction) => {
 
 	return interaction.editReply({ embeds: [embed] });
 };
-

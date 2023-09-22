@@ -13,4 +13,3 @@ export const subCommandAutocomplete = async (interaction, subCommands) => {
 		await subCommand.autocomplete(interaction);
 	}
 };
-

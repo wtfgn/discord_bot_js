@@ -10,7 +10,7 @@ export const data = {
 	once: true,
 };
 
-export const execute = async client => {
+export const execute = async (client) => {
 	const appStore = useAppStore();
 
 	// Sync all defined models to the DB  (this will create the tables)
@@ -20,20 +20,20 @@ export const execute = async client => {
 	try {
 		await sequelize.sync({ alter: true });
 		logger.info('Successfully synced models to the database');
-	}
-	catch (err) {
+	} catch (err) {
 		logger.error(err, 'Failed to sync models to the database');
 	}
 
 	// Fetch cards data
 	try {
-		const cardsData = await request('https://svgdb.me/api/en').then(res => res.body.json());
+		const cardsData = await request('https://svgdb.me/api/en').then((res) =>
+			res.body.json(),
+		);
 		// Set cards data to app store
 		appStore.cardsData = cardsData;
 
 		logger.info('Successfully fetched cards data');
-	}
-	catch (err) {
+	} catch (err) {
 		logger.error(err, 'Failed to fetch cards data');
 	}
 

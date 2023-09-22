@@ -1,5 +1,8 @@
 import { SlashCommandBuilder, Collection } from 'discord.js';
-import { subCommandExecutor, subCommandAutocomplete } from '@/utils/executor.js';
+import {
+	subCommandExecutor,
+	subCommandAutocomplete,
+} from '@/utils/executor.js';
 import { notInVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
 
 export const data = new SlashCommandBuilder()

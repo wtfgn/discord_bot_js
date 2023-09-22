@@ -1,5 +1,8 @@
 import { SlashCommandBuilder, Collection } from 'discord.js';
-import { subCommandExecutor, subCommandAutocomplete } from '@/utils/executor.js';
+import {
+	subCommandExecutor,
+	subCommandAutocomplete,
+} from '@/utils/executor.js';
 
 export const data = new SlashCommandBuilder()
 	.setName('sv')

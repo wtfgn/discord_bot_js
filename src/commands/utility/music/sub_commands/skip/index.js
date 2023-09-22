@@ -1,19 +1,23 @@
 import { SlashCommandSubcommandBuilder, EmbedBuilder } from 'discord.js';
 import { useQueue } from 'discord-player';
 import { notInSameVoiceChannel } from '@/utils/validator/voice_channel_validator.js';
-import { queueDoesNotExist, queueIsEmpty } from '@/utils/validator/queue_validator.js';
+import {
+	queueDoesNotExist,
+	queueIsEmpty,
+} from '@/utils/validator/queue_validator.js';
 import { embedOptions } from '#/config/config.json';
 import { logger } from '@/services/logger.js';
 
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('skip')
 	.setDescription('Skip the current track or a specified track')
-	.addIntegerOption(option =>
+	.addIntegerOption((option) =>
 		option
 			.setName('track_number')
 			.setDescription('Provide the track number to skip')
 			.setMinValue(1)
-			.setRequired(false));
+			.setRequired(false),
+	);
 
 export const execute = async (interaction) => {
 	// Defer the reply to the interaction
@@ -36,7 +40,9 @@ export const execute = async (interaction) => {
 	if (skipToTrack) {
 		// Check if the track number is valid
 		if (skipToTrack > queue.tracks.data.length) {
-			logger.debug(`User ${user.username} used the skip command with an invalid track number.`);
+			logger.debug(
+				`User ${user.username} used the skip command with an invalid track number.`,
+			);
 
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
@@ -44,14 +50,13 @@ export const execute = async (interaction) => {
 					`**${embedOptions.icons.warning} Oops!**\nThere are only \`${queue.tracks.data.length}\` tracks in the queue. You cannot skip to track \`${skipToTrack}\`.\n\nView tracks added to the queue with **\`/music queue\`**.`,
 				);
 			return interaction.editReply({ embeds: [embed] });
-		}
-		else {
+		} else {
 			// Skip to the track
 			const skippedTrack = queue.currentTrack;
 			const durationFormat =
-				skippedTrack.raw.duration === 0 || skippedTrack.duration === '0:00' ?
-					'' :
-					`\`${skippedTrack.duration}\``;
+				skippedTrack.raw.duration === 0 || skippedTrack.duration === '0:00'
+					? ''
+					: `\`${skippedTrack.duration}\``;
 
 			queue.node.skipTo(skipToTrack - 1);
 
@@ -74,7 +79,9 @@ export const execute = async (interaction) => {
 		// Check if there is any tracks in the queue
 		// eslint-disable-next-line no-lonely-if
 		if (queue.tracks.data.length === 0 && !queue.currentTrack) {
-			logger.debug(`User ${user.username} used the skip command with no tracks in the queue or currently playing.`);
+			logger.debug(
+				`User ${user.username} used the skip command with no tracks in the queue or currently playing.`,
+			);
 
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
@@ -88,9 +95,9 @@ export const execute = async (interaction) => {
 	// Skip the current track
 	const skippedTrack = queue.currentTrack;
 	const durationFormat =
-		skippedTrack.raw.duration === 0 || skippedTrack.duration === '0:00' ?
-			'' :
-			`\`${skippedTrack.duration}\``;
+		skippedTrack.raw.duration === 0 || skippedTrack.duration === '0:00'
+			? ''
+			: `\`${skippedTrack.duration}\``;
 
 	queue.node.skip();
 
@@ -114,13 +121,15 @@ export const execute = async (interaction) => {
 		.setThumbnail(skippedTrack.thumbnail)
 		.setDescription(
 			`**${embedOptions.icons.skipped} Skipped track**\n**${durationFormat} [${skippedTrack.title}](${skippedTrack.url})**` +
-			`${queue.repeatMode === 0
-				? ''
-				: `\n\n**${queue.repeatMode === 3
-					? embedOptions.icons.autoplaying
-					: embedOptions.icons.looping
-				} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.`
-			}`,
+				`${
+					queue.repeatMode === 0
+						? ''
+						: `\n\n**${
+								queue.repeatMode === 3
+									? embedOptions.icons.autoplaying
+									: embedOptions.icons.looping
+						  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.`
+				}`,
 		);
 
 	return interaction.editReply({ embeds: [embed] });

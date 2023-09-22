@@ -14,11 +14,15 @@ export const execute = async (interaction) => {
 	const timer = appStore.timers.get(user.id);
 
 	if (!timer) {
-		logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) tried to remove a timer, but there is no timer set.`);
+		logger.debug(
+			`User ${user.username}#${user.discriminator} (${user.id}) tried to remove a timer, but there is no timer set.`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
-			.setDescription(`**${embedOptions.icons.warning} There is no timer set!**`);
+			.setDescription(
+				`**${embedOptions.icons.warning} There is no timer set!**`,
+			);
 
 		return interaction.reply({ embeds: [embed], ephemeral: true });
 	}
@@ -26,18 +30,23 @@ export const execute = async (interaction) => {
 	try {
 		clearInterval(timer);
 		appStore.timers.delete(user.id);
-	}
-	catch (error) {
-		logger.error(`User ${user.username}#${user.discriminator} (${user.id}) tried to remove a timer, but there was an error: ${error.message}`);
+	} catch (error) {
+		logger.error(
+			`User ${user.username}#${user.discriminator} (${user.id}) tried to remove a timer, but there was an error: ${error.message}`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.error)
-			.setDescription(`**${embedOptions.icons.error} There was an error removing your timer!**`);
+			.setDescription(
+				`**${embedOptions.icons.error} There was an error removing your timer!**`,
+			);
 
 		return interaction.reply({ embeds: [embed], ephemeral: true });
 	}
 
-	logger.debug(`User ${user.username}#${user.discriminator} (${user.id}) removed their timer.`);
+	logger.debug(
+		`User ${user.username}#${user.discriminator} (${user.id}) removed their timer.`,
+	);
 
 	const embed = new EmbedBuilder()
 		.setColor(embedOptions.colors.success)

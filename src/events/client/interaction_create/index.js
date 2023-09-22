@@ -7,7 +7,7 @@ export const data = {
 	name: Events.InteractionCreate,
 };
 
-export const execute = async interaction => {
+export const execute = async (interaction) => {
 	const appStore = useAppStore();
 	const commandsActionMap = appStore.commandsActionMap;
 	// Get command
@@ -26,7 +26,9 @@ export const execute = async interaction => {
 		const { timeLeft, commandName } = checkCooldown(interaction, command);
 		if (timeLeft) {
 			return interaction.reply({
-				content: `Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${commandName}\` command.`,
+				content: `Please wait ${timeLeft.toFixed(
+					1,
+				)} more second(s) before reusing the \`${commandName}\` command.`,
 				ephemeral: true,
 			});
 		}
@@ -34,8 +36,7 @@ export const execute = async interaction => {
 		// Execute command
 		try {
 			await command.execute(interaction);
-		}
-		catch (err) {
+		} catch (err) {
 			logger.error(err, 'Failed to execute command');
 			// If interaction is already replied or deferred
 			if (interaction.replied || interaction.deferred) {
@@ -43,16 +44,14 @@ export const execute = async interaction => {
 					content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``,
 					ephemeral: true,
 				});
-			}
-			else {
+			} else {
 				await interaction.reply({
 					content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``,
 					ephemeral: true,
 				});
 			}
 		}
-	}
-	else if (interaction.isAutocomplete()) {
+	} else if (interaction.isAutocomplete()) {
 		if (!command) {
 			logger.error(`Command ${interaction.commandName} does not exist`);
 			return;
@@ -61,8 +60,7 @@ export const execute = async interaction => {
 		// Execute autocomplete
 		try {
 			await command.autocomplete(interaction);
-		}
-		catch (err) {
+		} catch (err) {
 			logger.error(err, 'Failed to execute autocomplete');
 		}
 	}

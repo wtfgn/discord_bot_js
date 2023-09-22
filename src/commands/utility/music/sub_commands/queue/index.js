@@ -7,11 +7,12 @@ import { logger } from '@/services/logger.js';
 export const data = new SlashCommandSubcommandBuilder()
 	.setName('queue')
 	.setDescription('Show the current queue')
-	.addIntegerOption(option =>
+	.addIntegerOption((option) =>
 		option
 			.setName('page')
 			.setDescription('Provide the page number')
-			.setMinValue(1));
+			.setMinValue(1),
+	);
 
 export const execute = async (interaction) => {
 	// Defer the reply to the interaction
@@ -27,15 +28,23 @@ export const execute = async (interaction) => {
 
 	if (!queue) {
 		if (pageIndex >= 1) {
-			logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`);
+			logger.debug(
+				`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`,
+			);
 
 			const embed = new EmbedBuilder()
 				.setColor(embedOptions.colors.warning)
-				.setDescription(`**${embedOptions.icons.warning} Oops!**\nPage \`${pageIndex + 1}\` is not a valid page number.\n\nThe queue is currently empty, first add some tracks with **\`/play\`**!`);
+				.setDescription(
+					`**${embedOptions.icons.warning} Oops!**\nPage \`${
+						pageIndex + 1
+					}\` is not a valid page number.\n\nThe queue is currently empty, first add some tracks with **\`/play\`**!`,
+				);
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an empty queue`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an empty queue`,
+		);
 
 		queueString = 'The queue is empty, add some tracks with **`/music play`**!';
 		const embed = new EmbedBuilder()
@@ -44,7 +53,9 @@ export const execute = async (interaction) => {
 				iconURL: guild.iconURL(),
 			})
 			.setColor(embedOptions.colors.info)
-			.setDescription(`**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`)
+			.setDescription(
+				`**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`,
+			)
 			.setFooter({
 				text: 'Page 1 of 1 (0 tracks)',
 			});
@@ -55,25 +66,34 @@ export const execute = async (interaction) => {
 	const totalPages = Math.ceil(queueLength / playerOptions.queuePerPage) || 1;
 
 	if (pageIndex >= totalPages) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with an invalid page number`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setColor(embedOptions.colors.warning)
-			.setDescription(`**${embedOptions.icons.warning} Oops!**\nPage \`${pageIndex + 1}\` is not a valid page number.\n\nThe queue currently has \`${queueLength}\` tracks, so the last page is \`${totalPages}\`.`);
+			.setDescription(
+				`**${embedOptions.icons.warning} Oops!**\nPage \`${
+					pageIndex + 1
+				}\` is not a valid page number.\n\nThe queue currently has \`${queueLength}\` tracks, so the last page is \`${totalPages}\`.`,
+			);
 		return interaction.editReply({ embeds: [embed] });
 	}
 
 	if (queue.tracks.data.length === 0) {
 		queueString = 'The queue is empty, add some tracks with **`/music play`**!';
-	}
-	else {
+	} else {
 		queueString = queue.tracks.data
 			.slice(pageIndex * 10, pageIndex * 10 + 10)
 			.map((track, index) => {
 				const durationFormat =
-					track.raw.duration === 0 || track.duration === '0:00' ? '' : `\`${track.duration}\``;
+					track.raw.duration === 0 || track.duration === '0:00'
+						? ''
+						: `\`${track.duration}\``;
 
-				return `**${pageIndex * 10 + index + 1}.** **${durationFormat} [${track.title}](${track.url})**`;
+				return `**${pageIndex * 10 + index + 1}.** **${durationFormat} [${
+					track.title
+				}](${track.url})**`;
 			})
 			.join('\n');
 	}
@@ -89,29 +109,42 @@ export const execute = async (interaction) => {
 
 	const loopModeUserString = loopModesFormatted.get(queue.repeatMode);
 
-	const repeatModeString = `${queue.repeatMode === 0
-		? '' :
-		`**${queue.repeatMode === 3 ? embedOptions.icons.autoplay : embedOptions.icons.loop
-		} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.\n\n`}`;
+	const repeatModeString = `${
+		queue.repeatMode === 0
+			? ''
+			: `**${
+					queue.repeatMode === 3
+						? embedOptions.icons.autoplay
+						: embedOptions.icons.loop
+			  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.\n\n`
+	}`;
 
 	if (!currentTrack) {
-		logger.debug(`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but there is no current track`);
+		logger.debug(
+			`User <${interaction.user.username}> tried to use <${interaction.commandName}> command but there is no current track`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setAuthor({
-				name: `Channel: ${queue.channel.name} (${queue.channel.bitrate / 1000}kbps)`,
+				name: `Channel: ${queue.channel.name} (${
+					queue.channel.bitrate / 1000
+				}kbps)`,
 				iconURL: guild.iconURL(),
 			})
 			.setColor(embedOptions.colors.info)
-			.setDescription(`${repeatModeString}` + `**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`)
+			.setDescription(
+				`${repeatModeString}` +
+					`**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`,
+			)
 			.setFooter({
 				text: `Page ${pageIndex + 1} of ${totalPages} (${queueLength} tracks)`,
 			});
 		return interaction.editReply({ embeds: [embed] });
-	}
-	else {
+	} else {
 		const timestamp = queue.node.getTimestamp();
-		let bar = `**\`${timestamp.current.label}\`** ${queue.node.createProgressBar({
+		let bar = `**\`${
+			timestamp.current.label
+		}\`** ${queue.node.createProgressBar({
 			queue: false,
 			length: playerOptions.progressBar.length ?? 12,
 			timecodes: playerOptions.progressBar.timecodes ?? false,
@@ -124,21 +157,29 @@ export const execute = async (interaction) => {
 			bar = '_No duration available._';
 		}
 
-		logger.debug(`User <${interaction.user.username}> used <${interaction.commandName}> command and got the queue`);
+		logger.debug(
+			`User <${interaction.user.username}> used <${interaction.commandName}> command and got the queue`,
+		);
 
 		const embed = new EmbedBuilder()
 			.setAuthor({
-				name: `Channel: ${queue.channel.name} (${queue.channel.bitrate / 1000}kbps)`,
+				name: `Channel: ${queue.channel.name} (${
+					queue.channel.bitrate / 1000
+				}kbps)`,
 				iconURL: interaction.guild.iconURL(),
 			})
 			.setThumbnail(queue.currentTrack.thumbnail)
 			.setColor(embedOptions.colors.info)
-			.setDescription(`**${embedOptions.icons.audioPlaying} Now playing**\n` +
-			(currentTrack ? `**[${currentTrack.title}](${currentTrack.url})**` : 'None') +
-			`\nRequested by: <@${currentTrack.requestedBy.id}>` +
-			`\n ${bar}\n\n` +
-			`${repeatModeString}` +
-			`**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`)
+			.setDescription(
+				`**${embedOptions.icons.audioPlaying} Now playing**\n` +
+					(currentTrack
+						? `**[${currentTrack.title}](${currentTrack.url})**`
+						: 'None') +
+					`\nRequested by: <@${currentTrack.requestedBy.id}>` +
+					`\n ${bar}\n\n` +
+					`${repeatModeString}` +
+					`**${embedOptions.icons.queue} Tracks in queue**\n${queueString}`,
+			)
 			.setFooter({
 				text: `Page ${pageIndex + 1} of ${totalPages} (${queueLength} tracks)`,
 			});

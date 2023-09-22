@@ -73,17 +73,27 @@ export const execute = async (interaction) => {
 		},
 		{
 			name: 'Uptime',
-			value: `${Math.floor(client.uptime / 86400000)}d ${Math.floor(client.uptime / 3600000) % 24}h ${Math.floor(client.uptime / 60000) % 60}m ${Math.floor(client.uptime / 1000) % 60}s`,
+			value: `${Math.floor(client.uptime / 86400000)}d ${
+				Math.floor(client.uptime / 3600000) % 24
+			}h ${Math.floor(client.uptime / 60000) % 60}m ${
+				Math.floor(client.uptime / 1000) % 60
+			}s`,
 			inline: true,
 		},
 	];
 
-	const message = await interaction.reply({ embeds: [embed], fetchReply: true });
+	const message = await interaction.reply({
+		embeds: [embed],
+		fetchReply: true,
+	});
 	const recievedEmbed = message.embeds[0];
 	let imageURL = recievedEmbed.image.url;
 
 	setInterval(async () => {
-		imageURL = imageURL === 'https://svgdb.me/assets/fullart/1233410200.png' ? 'https://svgdb.me/assets/fullart/1233410201.png' : 'https://svgdb.me/assets/fullart/1233410200.png';
+		imageURL =
+			imageURL === 'https://svgdb.me/assets/fullart/1233410200.png'
+				? 'https://svgdb.me/assets/fullart/1233410201.png'
+				: 'https://svgdb.me/assets/fullart/1233410200.png';
 		const editedEmbed = EmbedBuilder.from(recievedEmbed).setImage(imageURL);
 		message.edit({ embeds: [editedEmbed] });
 	}, 2000);
