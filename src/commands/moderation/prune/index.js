@@ -33,7 +33,8 @@ export const execute = async (interaction) => {
 			});
 		}
 		deletedMessages = await channel.bulkDelete(messagesToDelete, true);
-	} else {
+	}
+	else {
 		deletedMessages = await channel.bulkDelete(amount, true);
 	}
 

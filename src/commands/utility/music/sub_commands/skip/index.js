@@ -50,7 +50,8 @@ export const execute = async (interaction) => {
 					`**${embedOptions.icons.warning} Oops!**\nThere are only \`${queue.tracks.data.length}\` tracks in the queue. You cannot skip to track \`${skipToTrack}\`.\n\nView tracks added to the queue with **\`/music queue\`**.`,
 				);
 			return interaction.editReply({ embeds: [embed] });
-		} else {
+		}
+		else {
 			// Skip to the track
 			const skippedTrack = queue.currentTrack;
 			const durationFormat =
@@ -125,10 +126,10 @@ export const execute = async (interaction) => {
 					queue.repeatMode === 0
 						? ''
 						: `\n\n**${
-								queue.repeatMode === 3
-									? embedOptions.icons.autoplaying
-									: embedOptions.icons.looping
-						  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.`
+							queue.repeatMode === 3
+								? embedOptions.icons.autoplaying
+								: embedOptions.icons.looping
+						} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.`
 				}`,
 		);
 

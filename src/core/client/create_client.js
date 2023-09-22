@@ -29,7 +29,8 @@ export const createClient = async () => {
 
 		logger.info('Successfully created Discord client');
 		return client;
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to create Discord client');
 		throw err;
 	}

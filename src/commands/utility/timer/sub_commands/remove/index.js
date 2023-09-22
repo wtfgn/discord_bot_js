@@ -30,7 +30,8 @@ export const execute = async (interaction) => {
 	try {
 		clearInterval(timer);
 		appStore.timers.delete(user.id);
-	} catch (error) {
+	}
+	catch (error) {
 		logger.error(
 			`User ${user.username}#${user.discriminator} (${user.id}) tried to remove a timer, but there was an error: ${error.message}`,
 		);

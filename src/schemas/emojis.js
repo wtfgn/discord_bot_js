@@ -8,13 +8,13 @@ export const Emojis = sequelize.define(
 			type: DataTypes.STRING,
 			primaryKey: true,
 		},
-		msgCreateEmojiId: {
+		seenEmojiId: {
 			type: DataTypes.STRING,
-			primaryKey: true,
+			allowNull: true,
 		},
-		msgReactionEmojiId: {
+		reactionEmojiId: {
 			type: DataTypes.STRING,
-			primaryKey: true,
+			allowNull: true,
 		},
 	},
 	{

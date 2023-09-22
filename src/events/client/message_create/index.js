@@ -1,15 +1,15 @@
-import { Events } from 'discord.js';
+import { Events, MessageType } from 'discord.js';
 import { Emojis } from '@/schemas/emojis.js';
 import { logger } from '@/services/logger.js';
 
 export const data = {
-	name: Events.MessageReactionAdd,
+	name: Events.MessageCreate,
 };
 
-export const execute = async (reaction, user) => {
-	if (reaction.partial) {
+export const execute = async (message) => {
+	if (message.partial) {
 		try {
-			await reaction.fetch();
+			await message.fetch();
 		}
 		catch (error) {
 			logger.error(error);
@@ -18,12 +18,13 @@ export const execute = async (reaction, user) => {
 		}
 	}
 
-	// Get message
-	const { message } = reaction;
+	// Only allow default and reply messages
+	if (message.type !== MessageType.Default && message.type !== MessageType.Reply) return;
+
+	// Get guild
 	const { guild } = message;
-	// Check if the message is sent in a guild
-	// or if the sender is a bot
-	if (!message.guild || user.bot) return;
+	// Check if reaction is added to a message in a guild channel
+	if (!message.guild) return;
 
 
 	// Add the emoji reaction to the message
@@ -37,10 +38,10 @@ export const execute = async (reaction, user) => {
 	if (!guildDB) return;
 
 	// Check if the emoji is set
-	if (!guildDB.reactionEmojiId) return;
+	if (!guildDB.seenEmojiId) return;
 
 	// React to the message
-	const emoji = guild.emojis.cache.get(guildDB.reactionEmojiId);
+	const emoji = guild.emojis.cache.get(guildDB.seenEmojiId);
 	if (!emoji) return;
 	await message.react(emoji);
 };

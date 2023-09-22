@@ -20,7 +20,8 @@ export const execute = async (client) => {
 	try {
 		await sequelize.sync({ alter: true });
 		logger.info('Successfully synced models to the database');
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to sync models to the database');
 	}
 
@@ -33,7 +34,8 @@ export const execute = async (client) => {
 		appStore.cardsData = cardsData;
 
 		logger.info('Successfully fetched cards data');
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to fetch cards data');
 	}
 

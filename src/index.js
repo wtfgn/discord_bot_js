@@ -45,7 +45,8 @@ export const sequelize = new Sequelize('database', 'user', 'password', {
 
 		// Login to Discord with your client's token
 		await client.login(process.env.BOT_TOKEN);
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to initialize application');
 		throw err;
 	}

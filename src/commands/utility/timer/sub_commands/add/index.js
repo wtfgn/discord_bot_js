@@ -95,7 +95,8 @@ export const execute = async (interaction) => {
 		try {
 			clearInterval(previousTimer);
 			appStore.timers.delete(user.id);
-		} catch (error) {
+		}
+		catch (error) {
 			logger.error(
 				`User ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) tried to clear their timer, but there was an error: ${error.message}`,
 			);
@@ -143,12 +144,14 @@ export const execute = async (interaction) => {
 			try {
 				if (appStore.timers.has(interaction.user.id)) {
 					appStore.timers.delete(interaction.user.id);
-				} else {
+				}
+				else {
 					logger.debug(
 						`User ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) tried to delete their timer, but it was already deleted.`,
 					);
 				}
-			} catch {
+			}
+			catch {
 				logger.debug(
 					`User ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) tried to delete their timer, but something went wrong.`,
 				);

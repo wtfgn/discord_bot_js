@@ -14,7 +14,8 @@ const updateSlashCommands = async (guildID, commandData) => {
 			logger.info(
 				`Successfully registered ${result.length} slash commands for guild ${guildID}`,
 			);
-		} else {
+		}
+		else {
 			const result = await rest.put(
 				Routes.applicationCommands(process.env.CLIENT_ID),
 				{ body: commandData },
@@ -23,7 +24,8 @@ const updateSlashCommands = async (guildID, commandData) => {
 				`Successfully registered ${result.length} slash commands globally`,
 			);
 		}
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to register slash commands');
 	}
 };
@@ -62,7 +64,8 @@ export const loadCommands = async (client = null) => {
 			commandData.push(command.data.toJSON());
 			// Add command to collection
 			commands.set(command.data.name, command);
-		} else {
+		}
+		else {
 			logger.error(`Command ${file} is missing data or execute property`);
 		}
 	}
@@ -89,7 +92,8 @@ export const loadEvents = async (client = null) => {
 			event.data.once
 				? client.once(event.data.name, (...args) => event.execute(...args))
 				: client.on(event.data.name, (...args) => event.execute(...args));
-		} else {
+		}
+		else {
 			console.error(`Event ${file} is missing data or execute property`);
 		}
 	}
@@ -110,7 +114,8 @@ export const loadSubCommands = async (commandName) => {
 			subCommands.set(subCommand.data.name, subCommand);
 			// Add sub command name to array
 			subCommandNames.push(subCommand.data.name);
-		} else {
+		}
+		else {
 			logger.error(`Sub command ${file} is missing data or execute property`);
 		}
 	}
@@ -135,16 +140,17 @@ export const loadPlayerEvents = async (discordPlayer) => {
 			// Set event listener
 			event.data.once
 				? discordPlayer.once(event.data.name, (...args) =>
-						event.execute(...args),
-				  )
+					event.execute(...args),
+				)
 				: event.isPlayerEvent
-				? discordPlayer.events.on(event.data.name, (...args) =>
+					? discordPlayer.events.on(event.data.name, (...args) =>
 						event.execute(...args),
-				  )
-				: discordPlayer.on(event.data.name, (...args) =>
+					)
+					: discordPlayer.on(event.data.name, (...args) =>
 						event.execute(...args),
-				  );
-		} else {
+					);
+		}
+		else {
 			logger.error(`Event ${file} is missing data or execute property`);
 		}
 	}
@@ -167,7 +173,8 @@ export const deleteGuildCommands = async (guildID = null) => {
 		);
 
 		logger.info(`Successfully deleted guild ${guildID} commands.`);
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to delete guild commands');
 	}
 };
@@ -179,7 +186,8 @@ export const deleteGlobalCommands = async () => {
 			body: [],
 		});
 		logger.info('Successfully deleted global commands.');
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Failed to delete global commands');
 	}
 };

@@ -144,7 +144,8 @@ export const execute = async (interaction) => {
 				value: `||${emojis[componentInteraction.customId]}||`,
 			});
 			playerMove = componentInteraction.customId;
-		} else {
+		}
+		else {
 			embed.addFields({
 				name: `${componentInteraction.user.username}'s move`,
 				value: `||${emojis[componentInteraction.customId]}||`,
@@ -157,7 +158,8 @@ export const execute = async (interaction) => {
 		if (playerMove && opponentMove) {
 			if (playerMove === opponentMove) {
 				embed.addFields({ name: 'Result', value: 'Draw!' });
-			} else if (
+			}
+			else if (
 				(playerMove === 'rock' && opponentMove === 'scissors') ||
 				(playerMove === 'scissors' && opponentMove === 'paper') ||
 				(playerMove === 'paper' && opponentMove === 'rock')
@@ -167,7 +169,8 @@ export const execute = async (interaction) => {
 					value: `${interaction.user.username} wins!`,
 				});
 				playerWins++;
-			} else {
+			}
+			else {
 				embed.addFields({
 					name: 'Result',
 					value: `${opponent.username} wins!`,

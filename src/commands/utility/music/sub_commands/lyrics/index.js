@@ -159,7 +159,8 @@ export const execute = async (interaction) => {
 
 				await interaction.editReply({ embeds: [embed] });
 				continue;
-			} else {
+			}
+			else {
 				const embed = new EmbedBuilder()
 					.setColor(embedOptions.colors.info)
 					.setDescription(`\`\`\`fix\n${message}\`\`\``);
@@ -210,7 +211,8 @@ export const autocomplete = async (interaction) => {
 					: `${track.title} [Author: ${track.author}]`,
 			value: track.title.slice(0, 100),
 		}));
-	} else {
+	}
+	else {
 		response = [
 			{
 				name: `${lyricsResult.title} [Artist: ${lyricsResult.artist.name}]`.slice(

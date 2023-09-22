@@ -37,7 +37,8 @@ export const execute = async (interaction) => {
 		searchResult = await discordPlayer.search(query, {
 			requestedBy: user,
 		});
-	} catch (err) {
+	}
+	catch (err) {
 		logger.error(err, 'Error while searching for track: ');
 		await interaction.followUp({
 			content: `There was an error while executing this command!\n\`\`\`${err}\`\`\``,
@@ -122,7 +123,8 @@ export const execute = async (interaction) => {
 		logger.debug(
 			`User <${interaction.user.username}> used <${interaction.commandName}> command and added track <${track.title}> to queue`,
 		);
-	} catch (err) {
+	}
+	catch (err) {
 		if (err.message.includes('Sign in to confirm your age')) {
 			logger.debug(
 				`User <${interaction.user.username}> tried to use <${interaction.commandName}> command with age restricted track`,
@@ -154,7 +156,7 @@ export const execute = async (interaction) => {
 		if (
 			(err.type === 'TypeError' &&
 				(err.message.includes(
-					"Cannot read properties of null (reading 'createStream')",
+					'Cannot read properties of null (reading \'createStream\')',
 				) ||
 					err.message.includes(
 						'Failed to fetch resources for ytdl streaming',

@@ -31,7 +31,8 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 		currentTrack.metadata.bridge.views !== undefined
 	) {
 		plays = currentTrack.metadata.bridge.views;
-	} else if (plays === 0) {
+	}
+	else if (plays === 0) {
 		plays = 'Unavailable';
 	}
 
@@ -81,10 +82,10 @@ export const createNowPlayingEmbed = (queue, currentTrack, interaction) => {
 					queue.repeatMode === 0
 						? ''
 						: `**${
-								queue.repeatMode === 3
-									? embedOptions.icons.autoplay
-									: embedOptions.icons.loop
-						  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/music loop\`**.`
+							queue.repeatMode === 3
+								? embedOptions.icons.autoplay
+								: embedOptions.icons.loop
+						} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/music loop\`**.`
 				}`,
 		)
 		.addFields({

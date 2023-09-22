@@ -82,7 +82,8 @@ export const execute = async (interaction) => {
 
 	if (queue.tracks.data.length === 0) {
 		queueString = 'The queue is empty, add some tracks with **`/music play`**!';
-	} else {
+	}
+	else {
 		queueString = queue.tracks.data
 			.slice(pageIndex * 10, pageIndex * 10 + 10)
 			.map((track, index) => {
@@ -113,10 +114,10 @@ export const execute = async (interaction) => {
 		queue.repeatMode === 0
 			? ''
 			: `**${
-					queue.repeatMode === 3
-						? embedOptions.icons.autoplay
-						: embedOptions.icons.loop
-			  } Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.\n\n`
+				queue.repeatMode === 3
+					? embedOptions.icons.autoplay
+					: embedOptions.icons.loop
+			} Looping**\nLoop mode is set to ${loopModeUserString}. You can change it with **\`/loop\`**.\n\n`
 	}`;
 
 	if (!currentTrack) {
@@ -140,7 +141,8 @@ export const execute = async (interaction) => {
 				text: `Page ${pageIndex + 1} of ${totalPages} (${queueLength} tracks)`,
 			});
 		return interaction.editReply({ embeds: [embed] });
-	} else {
+	}
+	else {
 		const timestamp = queue.node.getTimestamp();
 		let bar = `**\`${
 			timestamp.current.label

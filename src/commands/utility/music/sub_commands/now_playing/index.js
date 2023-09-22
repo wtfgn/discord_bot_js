@@ -147,10 +147,10 @@ export const execute = async (interaction) => {
 							queue.repeatMode === 0
 								? ''
 								: `\n\n**${
-										queue.repeatMode === 3
-											? embedOptions.icons.autoplaying
-											: embedOptions.icons.looping
-								  } Looping**\nLoop mode is set to ${repeatModeUserString}. You can change it with **\`/music loop\`**.`
+									queue.repeatMode === 3
+										? embedOptions.icons.autoplaying
+										: embedOptions.icons.looping
+								} Looping**\nLoop mode is set to ${repeatModeUserString}. You can change it with **\`/music loop\`**.`
 						}`,
 				);
 
@@ -160,7 +160,8 @@ export const execute = async (interaction) => {
 				ephemeral: true,
 			});
 		}
-	} catch (err) {
+	}
+	catch (err) {
 		if (err.code === 'InteractionCollectorError') {
 			logger.debug(
 				`User ${user.username}#${user.discriminator} (${user.id}) did not interact with the buttons in time in guild ${guild.name} (${guild.id}).`,
@@ -176,7 +177,8 @@ export const execute = async (interaction) => {
 				components: [],
 				ephemeral: true,
 			});
-		} else {
+		}
+		else {
 			logger.error(
 				err,
 				'An error occurred while executing the now playing command',
